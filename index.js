@@ -10,14 +10,18 @@ var shaderProgram = null;
 
 var tabuleiro = new Tabuleiro();
 var squares = tabuleiro.getSquares();
+var damas = tabuleiro.getDamas();
+console.log(damas);
 
 // NEW --- Buffers
 
 var squaresVertexPositionBuffer = [];
-
 var squaresVertexIndexBuffer = [];
-
 var squaresVertexColorBuffer = [];
+
+var damasVertexPositionBuffer = [];
+var damasVertexIndexBuffer = [];
+var damasVertexColorBuffer = [];
 
 // The global transformation parameters
 
@@ -65,103 +69,14 @@ var projectionType = 0;
 
 // NEW --- Storing the vertices defining the squares faces
 
-/* vertices = [
-            // Front face
-            -1.0, -1.0,  1.0,
-             1.0, -1.0,  1.0,
-             1.0,  1.0,  1.0,
-            -1.0,  1.0,  1.0,
-
-            // Back face
-            -1.0, -1.0, -1.0,
-            -1.0,  1.0, -1.0,
-             1.0,  1.0, -1.0,
-             1.0, -1.0, -1.0,
-
-            // Top face
-            -1.0,  1.0, -1.0,
-            -1.0,  1.0,  1.0,
-             1.0,  1.0,  1.0,
-             1.0,  1.0, -1.0,
-
-            // Bottom face
-            -1.0, -1.0, -1.0,
-             1.0, -1.0, -1.0,
-             1.0, -1.0,  1.0,
-            -1.0, -1.0,  1.0,
-
-            // Right face
-             1.0, -1.0, -1.0,
-             1.0,  1.0, -1.0,
-             1.0,  1.0,  1.0,
-             1.0, -1.0,  1.0,
-
-            // Left face
-            -1.0, -1.0, -1.0,
-            -1.0, -1.0,  1.0,
-            -1.0,  1.0,  1.0,
-            -1.0,  1.0, -1.0
-]; */
 
 // Texture coordinates for the quadrangular faces
 
 // Notice how they are assigne to the corresponding vertices
 
-var textureCoords = [
-
-          // Front face
-          0.0, 0.0,
-          1.0, 0.0,
-          1.0, 1.0,
-          0.0, 1.0,
-
-          // Back face
-          1.0, 0.0,
-          1.0, 1.0,
-          0.0, 1.0,
-          0.0, 0.0,
-
-          // Top face
-          0.0, 1.0,
-          0.0, 0.0,
-          1.0, 0.0,
-          1.0, 1.0,
-
-          // Bottom face
-          1.0, 1.0,
-          0.0, 1.0,
-          0.0, 0.0,
-          1.0, 0.0,
-
-          // Right face
-          1.0, 0.0,
-          1.0, 1.0,
-          0.0, 1.0,
-          0.0, 0.0,
-
-          // Left face
-          0.0, 0.0,
-          1.0, 0.0,
-          1.0, 1.0,
-          0.0, 1.0,
-];
 
 // Vertex indices defining the triangles
-        
-var cubeVertexIndices = [
-
-            0, 1, 2,      0, 2, 3,    // Front face
-
-            4, 5, 6,      4, 6, 7,    // Back face
-
-            8, 9, 10,     8, 10, 11,  // Top face
-
-            12, 13, 14,   12, 14, 15, // Bottom face
-
-            16, 17, 18,   16, 18, 19, // Right face
-
-            20, 21, 22,   20, 22, 23  // Left face
-];
+    
          
          
 //----------------------------------------------------------------------------
@@ -206,8 +121,55 @@ function initTexture() {
 
 // Handling the Buffers
 
-function initBuffers() {	
+function initBuffers() {
+	initBuffersQuadrados();
+	initBuffersDamas();
 	
+}
+
+function initBuffersDamas(){
+	for(var i = 0; i < 24; i++){
+		var dama = damas[i];
+		console.log(dama);
+		// Coordinates
+		var colors = dama.getColors();
+		var vertices = dama.getVertices();
+		var vertexIndices = dama.getVertexIndices();
+
+		var damaVertexPositionBuffer = gl.createBuffer();
+		gl.bindBuffer(gl.ARRAY_BUFFER, damaVertexPositionBuffer);
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+		damaVertexPositionBuffer.itemSize = 3;
+		damaVertexPositionBuffer.numItems = vertices.length / 3;
+
+		// Textures
+		/*boardVertexTextureCoordBuffer = gl.createBuffer();
+		gl.bindBuffer(gl.ARRAY_BUFFER, boardVertexTextureCoordBuffer);
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(textureCoords), gl.STATIC_DRAW);
+		boardVertexTextureCoordBuffer.itemSize = 2;
+		boardVertexTextureCoordBuffer.numItems = 24;*/
+
+		// Colors
+		var damaVertexColorBuffer = gl.createBuffer();
+		gl.bindBuffer(gl.ARRAY_BUFFER, damaVertexColorBuffer);
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
+		damaVertexColorBuffer.itemSize = 3;
+		damaVertexColorBuffer.numItems = vertices.length / 3;
+
+		// Vertex indices
+		var damaVertexIndexBuffer = gl.createBuffer();
+		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, damaVertexIndexBuffer);
+		gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(vertexIndices), gl.STATIC_DRAW);
+		damaVertexIndexBuffer.itemSize = 1;
+		damaVertexIndexBuffer.numItems = 36;
+
+		damasVertexPositionBuffer.push(damaVertexPositionBuffer);
+		damasVertexColorBuffer.push(damaVertexColorBuffer);
+		damasVertexIndexBuffer.push(damaVertexIndexBuffer);
+	}
+}
+
+function initBuffersQuadrados(){
 	for (var i = 0; i < 8; i++) {			
 		var line = squares[i];
 
@@ -251,7 +213,6 @@ function initBuffers() {
 			squaresVertexIndexBuffer.push(quadradoVertexIndexBuffer);
 		}
 	}
-	
 }
 
 //----------------------------------------------------------------------------
@@ -357,10 +318,21 @@ function drawScene() {
 	
 	// Call the drawModel function !!
 	
-	for (var i = 0; i < squaresVertexPositionBuffer.length; i++) {
+	for (var i = 0; i < squaresVertexPositionBuffer.length; i++) { //desenhar quadrado a quadrado
 		drawModel(  squaresVertexPositionBuffer[i],
 					squaresVertexColorBuffer[i],
 					squaresVertexIndexBuffer[i],
+					angleXX, angleYY, angleZZ,
+					sx, sy, sz,
+					tx, ty, tz,
+					mvMatrix,
+					primitiveType );
+	}
+
+	for (var i = 0; i < damasVertexPositionBuffer.length; i++) { //desenhar dama a dama
+		drawModel(  damasVertexPositionBuffer[i],
+					damasVertexColorBuffer[i],
+					damasVertexIndexBuffer[i],
 					angleXX, angleYY, angleZZ,
 					sx, sy, sz,
 					tx, ty, tz,
