@@ -15,7 +15,9 @@ class Tabuleiro {
 		this.slotsOcupados = new Array(8);
 		this.selectedSquare = null;
 
-		this.currentTeam = true; //false -> equipa branca
+		this.currentTeam = false; //false -> equipa branca
+		this.pecasComidasRead = [];
+		this.pecasComidasBege = [];
 		
 		this.squares = new Array(8);
 		for (var i = 0; i < this.squares.length; i++) {  //linha
@@ -108,19 +110,59 @@ class Tabuleiro {
 	}
 
 	setselectQuadrado(x,y){
-		console.log(this.slotsOcupados[x][y].getEquipa());
-		if(this.slotsOcupados[x][y] != null && this.slotsOcupados[x][y].getEquipa() == this.currentTeam){
-			
-			if(this.selectedQuadrado != null){
-				this.deselectQuadrado();
-				//jogada(slotinicial, slotfinal)
-			}else{
+
+		//console.log(this.slotsOcupados[x][y].getEquipa());
+		if(this.selectedQuadrado == null){		
+			if(this.slotsOcupados[x][y] != null && this.slotsOcupados[x][y].getEquipa() == this.currentTeam){
 				this.selectedQuadrado = this.overQuadrado;
 				var q = this.squares[this.selectedQuadrado[0]][this.selectedQuadrado[1]];
+				var dama = this.slotsOcupados[this.selectedQuadrado[0]][this.selectedQuadrado[1]];
+				dama.apagarDama();
 				q.changeColorSelected(false);	
 				this.getPossiblePlays(this.selectedQuadrado[0],this.selectedQuadrado[1]);	
+				
+			}		
+		}else{
+			console.log("else");
+			
+			if(this.checkinPossiblePlay(this.overQuadrado[0], this.overQuadrado[1])){
+				this.jogada(this.selectedQuadrado, this.overQuadrado);
+				console.log("read: "+this.pecasComidasRead);
+				console.log("bege: "+this.pecasComidasBege);
+			}
+			this.deselectQuadrado();
+		}	
+		
+	}
+
+	jogada(slotinicial, slotfinal){
+		var dama = this.slotsOcupados[slotinicial[0]][slotinicial[1]];
+		var coords = this.squares[slotfinal[0]][slotfinal[1]].getCoordenadas();
+		dama.setCoordenadas(coords,0.5,0.5);
+		this.slotsOcupados[slotinicial[0]][slotinicial[1]] = null;
+		this.slotsOcupados[slotfinal[0]][slotfinal[1]] = dama;
+		var damaCapturada = null;
+		if(Math.abs(slotfinal[1]-slotinicial[1]) == 2){
+			if(this.currentTeam){ //equipa bege
+				if(this.slotsOcupados[slotinicial[0]-1][slotinicial[1]-1].getEquipa() != this.currentTeam){
+					damaCapturada = this.slotsOcupados[slotinicial[0]-1][slotinicial[1]-1];
+				}
+				else if(this.slotsOcupados[slotinicial[0]-1][slotinicial[1]+1].getEquipa() != this.currentTeam){
+					damaCapturada = slotsOcupados[slotinicial[0]-1][slotinicial[1]+1];
+				}
+				this.pecasComidasBege.push(damaCapturada);
+			}else{//equipa vermelha
+				if(this.slotsOcupados[slotinicial[0]+1][slotinicial[1]-1].getEquipa() != this.currentTeam){
+					damaCapturada = slotsOcupados[slotinicial[0]+1][slotinicial[1]-1];
+				}
+				else if(this.slotsOcupados[slotinicial[0]+1][slotinicial[1]+1].getEquipa() != this.currentTeam){
+					damaCapturada = slotsOcupados[slotinicial[0]+1][slotinicial[1]+1];
+				}
+				this.pecasComidasRead.push(damaCapturada);
 			}
 		}
+
+		this.currentTeam = !this.currentTeam;
 		
 	}
 
@@ -431,9 +473,19 @@ class Damas{
 		
 	}
 
+	apagarDama(){
+		this.vertices = [];
+		this.colors = [];
+	}
+
+	setCoordenadas(slot){
+		this.id = slot;
+		this.setVertices(slot[0],slot[1], slot[2], 0.5,0.5);
+	}
+
 	getEquipa(){ return this.equipa;}
 
-	getID(){ return this.id;}
+	getCoordenadas(){ return this.id;}
 
 	getVertices() {
 		return this.vertices;
