@@ -11,9 +11,16 @@ class Tabuleiro {
 		var x = centro;
 		var z = centro;
 		var colorBlack = true; //quadrado do canto superior esquerdo vai ser preto
+		
+		this.slotsOcupados = new Array(8);
+		this.selectedSquare = null;
+
+		this.currentTeam = true; //false -> equipa branca
+		
 		this.squares = new Array(8);
 		for (var i = 0; i < this.squares.length; i++) {  //linha
 			this.squares[i] = new Array(8);
+			this.slotsOcupados[i] = new Array(8);
 			for (var j = 0; j < this.squares[i].length; j++) { //coluna
 				this.squares[i][j] = new Quadrado(x,0,z,squareW,squareH, colorBlack);
 				colorBlack = !colorBlack;
@@ -23,8 +30,8 @@ class Tabuleiro {
 			z++; //passa para a proxima linha
 			x = centro; //volta para a primeira coluna
 		}
-		this.selectQuadrado = null;
-		
+		this.selectedQuadrado = null;
+		this.possiblePlays = [];
 
 		const readTeamStartPositions = [	[0,0],[0,2],[0,4],[0,6],
 											[1,1],[1,3],[1,5],[1,7],
@@ -43,7 +50,8 @@ class Tabuleiro {
 			
 			if(typeof this.squares[0][0] != undefined){
 				var coord = this.squares[k][j].getCoordenadas();
-				this.damas[i] = new Damas(coord[0],coord[1],coord[2],0.5,0.5,true)
+				this.damas[i] = new Damas(coord[0],coord[1],coord[2],0.5,0.5,true);
+				this.slotsOcupados[k][j] = this.damas[i];
 			}
 		}
 		
@@ -53,7 +61,8 @@ class Tabuleiro {
 
 			if(typeof this.squares[0][0] != undefined){
 				var coord = this.squares[k][j].getCoordenadas();
-				this.damas[i+readTeamStartPositions.length] = new Damas(coord[0],coord[1],coord[2],0.5,0.5,false)
+				this.damas[i+readTeamStartPositions.length] = new Damas(coord[0],coord[1],coord[2],0.5,0.5,false);
+				this.slotsOcupados[k][j] = this.damas[i+readTeamStartPositions.length];
 			}
 		}
 		console.log(this.damas);
@@ -81,7 +90,7 @@ class Tabuleiro {
 	getoverQuadrado(){ return this.overQuadrado;}
 
 	setoverQuadrado(x,y){
-		var 	old = this.overQuadrado;
+		var old = this.overQuadrado;
 		this.overQuadrado = [x,y];
 		var q = this.squares[x][y];
 		var old_q = this.squares[old[0]][old[1]];
@@ -90,9 +99,114 @@ class Tabuleiro {
 		console.log(q);
 		//initBuffersQuadrado(q);
 		//initBuffersQuadrado(old_q);
-
 	}
 
+	setselectQuadrado(x,y){
+		console.log(this.slotsOcupados[x][y].getEquipa());
+		if(this.slotsOcupados[x][y] != null && this.slotsOcupados[x][y].getEquipa() == this.currentTeam){
+			
+			if(this.selectedQuadrado != null){
+				for(var i =0; i < this.possiblePlays.length;i++){
+					var temp = this.possiblePlays[i];
+					var removeColorPossible = this.squares[temp[0]][temp[1]];
+					removeColorPossible.changeColorSelected(true);
+				}
+				this.possiblePlays = []; 
+				var q = this.squares[this.selectedQuadrado[0]][this.selectedQuadrado[1]];
+				q.changeColorSelected(true);
+				this.selectedQuadrado = null;
+			}else{
+				this.selectedQuadrado = this.overQuadrado;
+				var q = this.squares[this.selectedQuadrado[0]][this.selectedQuadrado[1]];
+				q.changeColorSelected(false);	
+				this.getPossiblePlays(this.selectedQuadrado[0],this.selectedQuadrado[1]);	
+			}
+		}
+		
+	}
+
+	getselectQuadrado(){
+		return this.selectedQuadrado;
+	}
+
+	checkPosition(z,x){
+		if(z < 0 || z > 7 || x < 0|| x > 7){
+			return false;
+		}
+		else{
+			return true;
+		}
+	}
+
+	getPossiblePlays(z,x){
+		if(!this.currentTeam){ //equipa branca
+			if(this.slotsOcupados[z-1][x-1] == null){
+				if(this.checkPosition(z-1,x-1)){
+					this.possiblePlays.push([z-1,x-1]);
+					var q = this.squares[this.selectedQuadrado[0]-1][this.selectedQuadrado[1]-1];
+					q.changeColorSelected(false); 
+				}		
+			}
+			else if(this.slotsOcupados[z-2][x-2] == null && this.slotsOcupados[z-1][x-1].getEquipa() != this.currentTeam){
+				if(this.checkPosition(z-2,x-2)){
+					this.possiblePlays.push([z-2,x-2]);
+					var q = this.squares[this.selectedQuadrado[0]-2][this.selectedQuadrado[1]-2];
+					q.changeColorSelected(false); 
+				}	
+			}
+
+			if(this.slotsOcupados[z-1][x+1] == null){
+				if(this.checkPosition(z-1,x+1)){
+					this.possiblePlays.push([z-1,x+1]);
+					var q = this.squares[this.selectedQuadrado[0]-1][this.selectedQuadrado[1]+1];
+					console.log(q);
+					q.changeColorSelected(false); 
+				}
+				
+			}
+			else if(this.slotsOcupados[z-2][x+2] == null && this.slotsOcupados[z-1][x+1].getEquipa() != this.currentTeam){
+				if(this.checkPosition(z-2,x+2)){
+					this.possiblePlays.push([z-2, x+2]);
+					var q = this.squares[this.selectedQuadrado[0]-2][this.selectedQuadrado[1]+2];
+					q.changeColorSelected(false); 
+				}	
+			}
+		}else{ //equipa vermelha
+
+			if(this.slotsOcupados[z+1][x-1] == null){
+				if(this.checkPosition(z+1,x-1)){
+					this.possiblePlays.push([z+1,x-1]);
+					var q = this.squares[this.selectedQuadrado[0]+1][this.selectedQuadrado[1]-1];
+					q.changeColorSelected(false); 
+				}		
+			}
+			else if(this.slotsOcupados[z+2][x-2] == null && this.slotsOcupados[z+1][x-1].getEquipa() != this.currentTeam){
+				if(this.checkPosition(z+2,x-2)){
+					this.possiblePlays.push([z+2,x-2]);
+					var q = this.squares[this.selectedQuadrado[0]+2][this.selectedQuadrado[1]-2];
+					q.changeColorSelected(false); 
+				}	
+			}
+
+			if(this.slotsOcupados[z+1][x+1] == null){
+				if(this.checkPosition(z+1,x+1)){
+					this.possiblePlays.push([z+1,x+1]);
+					var q = this.squares[this.selectedQuadrado[0]+1][this.selectedQuadrado[1]+1];
+					console.log(q);
+					q.changeColorSelected(false); 
+				}
+				
+			}
+			else if(this.slotsOcupados[z+2][x+2] == null && this.slotsOcupados[z+1][x+1].getEquipa() != this.currentTeam){
+				if(this.checkPosition(z+2,x+2)){
+					this.possiblePlays.push([z+2, x+2]);
+					var q = this.squares[this.selectedQuadrado[0]+2][this.selectedQuadrado[1]+2];
+					q.changeColorSelected(false); 
+				}	
+			}
+		}
+
+	}
 }
 
 class Quadrado {
@@ -174,6 +288,26 @@ class Quadrado {
 		
 	}
 
+	changeColorSelected(reset){
+		if(reset){
+			var cor = 0.75;			//trocar a ordem da cor
+			if (this.colorBlack) {
+				cor = 0.25;
+			}
+
+			var length = this.vertices.length;
+			for (var i = 0; i < length; i++) {
+				this.colors[i] = cor;
+			}
+		}else{
+			for(var i = 0; i < this.colors.length; i+=3){
+				this.colors[i] = 0.1;
+				this.colors[i+1] = 1;
+				this.colors[i+2] = 0.1; 
+			}
+		}
+	}
+
 	setVertices(x,y,z,comp,alt){
 		this.vertices = [	//FRONT
 			x-comp/2,	y,	    z+comp/2,   //P1
@@ -229,6 +363,8 @@ class Quadrado {
 			x-comp/2,	y-alt,	z+comp/2,   //P7
 			x-comp/2,	y,	    z+comp/2];   //P1 
 	}
+
+	
 }
 
 class Damas{
@@ -345,4 +481,6 @@ class Damas{
 			x-comp/2,	y,	z+comp/2,   //P7
 			x-comp/2,	y+alt,	    z+comp/2];   //P1 
 	}
+
+	
 }

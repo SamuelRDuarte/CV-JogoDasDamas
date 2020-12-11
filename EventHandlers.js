@@ -298,4 +298,9 @@ function handleKeys() {
         console.log(tabuleiro.getoverQuadrado());
        
     }
+    if (currentlyPressedKeys[13]){
+        var q = tabuleiro.getoverQuadrado();
+        tabuleiro.setselectQuadrado(q[0],q[1]);
+        console.log(tabuleiro.getselectQuadrado());
+    }
 }
