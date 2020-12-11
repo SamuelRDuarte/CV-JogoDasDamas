@@ -96,8 +96,7 @@
 		
 		<p>Applying a texture and blending to the model's faces</p>
 		
-		<canvas id="my-canvas" style="border:1px solid #000000;" width="600" height="600"></canvas>
-
+		<canvas id="my-canvas" style="border:1px solid #000000;" width="600" height="600" ></canvas>
         <p>Use cursor keys to spin and <code>Page Up</code>/<code>Page Down</code> to zoom out/in.</p>
 		
 		<p>Press any mouse button and move the cursor to rotate the models.</p>
@@ -155,5 +154,12 @@
 				
 	</div>
 </body>
+
+<script>
+    function myFunction(event) {
+      var x = event.offsetX;
+      document.getElementById("demo").innerHTML = x;
+    }
+    </script>
 
 </html>

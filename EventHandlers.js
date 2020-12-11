@@ -24,9 +24,10 @@ function setEventListeners( canvas ){
         currentlyPressedKeys[event.keyCode] = false;
     }
 
-    document.onkeydown = handleKeyDown;
-
     document.onkeyup = handleKeyUp;
+    
+    document.onkeydown = handleKeyDown;
+    
 
     // Dropdown lists
 
@@ -215,8 +216,10 @@ function handleMouseDown(event) {
     mouseDown = true;
 
     lastMouseX = event.clientX;
+    console.log("x: "+event.clientX)
 
     lastMouseY = event.clientY;
+    console.log("y: "+event.clientY)
 }
 
 function handleMouseUp(event) {
@@ -244,7 +247,6 @@ function handleMouseMove(event) {
     var deltaY = newY - lastMouseY;
 
     angleXX += radians( 10 * deltaY  )
-
     lastMouseX = newX
 
     lastMouseY = newY;
@@ -260,64 +262,40 @@ var currentlyPressedKeys = {};
 
 function handleKeys() {
 
-    if (currentlyPressedKeys[33]) {
+    if (currentlyPressedKeys[65] || currentlyPressedKeys[97]) {
 
-        // Page Up
-
-        sx *= 0.9;
-
-        sz = sy = sx;
+        // Move Left key a
+        var q = tabuleiro.getoverQuadrado();
+        var x = (q[1]+7)%8;
+        tabuleiro.setoverQuadrado(q[0],x);
+        console.log(tabuleiro.getoverQuadrado());
+        
     }
-    if (currentlyPressedKeys[34]) {
+    if (currentlyPressedKeys[68] || currentlyPressedKeys[100]){
 
-        // Page Down
-
-        sx *= 1.1;
-
-        sz = sy = sx;
+        // Move Right key d
+        var q = tabuleiro.getoverQuadrado();
+        var x = (q[1]+1)%8;
+        tabuleiro.setoverQuadrado(q[0],x);
+        console.log(tabuleiro.getoverQuadrado());
+        
     }
-    if (currentlyPressedKeys[37]) {
+    if (currentlyPressedKeys[87] || currentlyPressedKeys[119]) {
 
-        // Left cursor key
-
-        if( rotationYY_ON == 0 ) {
-
-            rotationYY_ON = 1;
-        }
-
-        rotationYY_SPEED -= 0.25;
+        // Move Up key  w
+        var q = tabuleiro.getoverQuadrado();
+        var y = (q[0]+7)%8;
+        tabuleiro.setoverQuadrado(y,q[1]);
+        console.log(tabuleiro.getoverQuadrado());
+        
     }
-    if (currentlyPressedKeys[39]) {
+    if (currentlyPressedKeys[83] || currentlyPressedKeys[115]) {
 
-        // Right cursor key
-
-        if( rotationYY_ON == 0 ) {
-
-            rotationYY_ON = 1;
-        }
-
-        rotationYY_SPEED += 0.25;
-    }
-    if (currentlyPressedKeys[38]) {
-
-        // Up cursor key
-
-        if( rotationXX_ON == 0 ) {
-
-            rotationXX_ON = 1;
-        }
-
-        rotationXX_SPEED -= 0.25;
-    }
-    if (currentlyPressedKeys[40]) {
-
-        // Down cursor key
-
-        if( rotationXX_ON == 0 ) {
-
-            rotationXX_ON = 1;
-        }
-
-        rotationXX_SPEED += 0.25;
+        // Move Down key s
+        var q = tabuleiro.getoverQuadrado();
+        var y = (q[0]+1) % 8;
+        tabuleiro.setoverQuadrado(y,q[1]);
+        console.log(tabuleiro.getoverQuadrado());
+       
     }
 }

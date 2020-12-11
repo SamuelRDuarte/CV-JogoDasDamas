@@ -1,6 +1,7 @@
 class Tabuleiro {
 
 	constructor( ) {
+		this.overQuadrado = [7,0]; //[linha,coluna]
 		//dimensões do quadrado
 		var squareW=1.0; 
 		var squareH=0.4;
@@ -22,6 +23,8 @@ class Tabuleiro {
 			z++; //passa para a proxima linha
 			x = centro; //volta para a primeira coluna
 		}
+		this.selectQuadrado = null;
+		
 
 		const readTeamStartPositions = [	[0,0],[0,2],[0,4],[0,6],
 											[1,1],[1,3],[1,5],[1,7],
@@ -75,6 +78,20 @@ class Tabuleiro {
 		return this.damas;
 	}
 
+	getoverQuadrado(){ return this.overQuadrado;}
+
+	setoverQuadrado(x,y){
+		var 	old = this.overQuadrado;
+		this.overQuadrado = [x,y];
+		var q = this.squares[x][y];
+		var old_q = this.squares[old[0]][old[1]];
+		old_q.changeColor(true);
+		q.changeColor(false);
+		console.log(q);
+		initBuffers();
+
+	}
+
 }
 
 class Quadrado {
@@ -84,7 +101,7 @@ class Quadrado {
 	// s is side
 	// h is height
 	constructor(x ,y=0.0,z ,comp=1.0,alt=0.5, color) {
-		this.colorType = color;
+		this.colorBlack = color;
 		this.id = [x,y,z];
 		this.vertices = [	x-comp/2,	y,	    z+comp/2,   //P1
 							x-comp/2,	y,	    z-comp/2,   //P2
@@ -105,7 +122,7 @@ class Quadrado {
 
 		this.colors =  []
 		var cor = 0.75;			//trocar a ordem da cor
-		if (this.colorType) {
+		if (this.colorBlack) {
 			cor = 0.25;
 		}
 
@@ -119,8 +136,8 @@ class Quadrado {
 		return this.id;
 	}
 
-	getColorType() {
-		return this.colorType;
+	getColorBlack() {
+		return this.colorBlack;
 	}
 
 	getVertices() {
@@ -133,6 +150,25 @@ class Quadrado {
 
 	getColors() {
 		return this.colors;
+	}
+
+	changeColor(reset){
+		if(reset){
+			var cor = 0.75;
+			if (this.colorBlack) {
+				cor = 0.25;
+			}
+			for (var i = 0; i < this.colors.length; i++) {
+				this.colors[i] = cor;
+			}
+		}else{
+			for(var i = 0; i < this.colors.length; i+=3){
+				this.colors[i] = 0.6;
+				this.colors[i+1] = 0.1;
+				this.colors[i+2] = 0.9; 
+			}
+		}
+		
 	}
 }
 

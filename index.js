@@ -11,7 +11,7 @@ var shaderProgram = null;
 var tabuleiro = new Tabuleiro();
 var squares = tabuleiro.getSquares();
 var damas = tabuleiro.getDamas();
-console.log(damas);
+//console.log(damas);
 
 // NEW --- Buffers
 
@@ -130,7 +130,7 @@ function initBuffers() {
 function initBuffersDamas(){
 	for(var i = 0; i < 24; i++){
 		var dama = damas[i];
-		console.log(dama);
+		//console.log(dama);
 		// Coordinates
 		var colors = dama.getColors();
 		var vertices = dama.getVertices();
@@ -277,6 +277,7 @@ function drawScene() {
 	// Clearing with the background color
 	
 	gl.clear(gl.COLOR_BUFFER_BIT);
+	
 	
 	// NEW --- Computing the Projection Matrix
 	
