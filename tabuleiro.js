@@ -31,7 +31,7 @@ class Tabuleiro {
 			x = centro; //volta para a primeira coluna
 		}
 		this.selectedQuadrado = null;
-		this.possiblePlays = [];
+		this.possiblePlays = new Array();
 
 		const readTeamStartPositions = [	[0,0],[0,2],[0,4],[0,6],
 											[1,1],[1,3],[1,5],[1,7],
@@ -94,7 +94,13 @@ class Tabuleiro {
 		this.overQuadrado = [x,y];
 		var q = this.squares[x][y];
 		var old_q = this.squares[old[0]][old[1]];
-		old_q.changeColor(true);
+		if(!this.checkinPossiblePlay(old[0],old[1])){ //se não tiver nas PossiblePlays faz reset há cor
+			console.log("old: "+old);
+			console.log("positions: "+this.possiblePlays);
+			old_q.changeColor(true);
+		}else{										//else mantém a cor de selecionado
+			old_q.changeColorSelected(false);
+		}
 		q.changeColor(false);
 		console.log(q);
 		//initBuffersQuadrado(q);
@@ -106,15 +112,8 @@ class Tabuleiro {
 		if(this.slotsOcupados[x][y] != null && this.slotsOcupados[x][y].getEquipa() == this.currentTeam){
 			
 			if(this.selectedQuadrado != null){
-				for(var i =0; i < this.possiblePlays.length;i++){
-					var temp = this.possiblePlays[i];
-					var removeColorPossible = this.squares[temp[0]][temp[1]];
-					removeColorPossible.changeColorSelected(true);
-				}
-				this.possiblePlays = []; 
-				var q = this.squares[this.selectedQuadrado[0]][this.selectedQuadrado[1]];
-				q.changeColorSelected(true);
-				this.selectedQuadrado = null;
+				this.deselectQuadrado();
+				//jogada(slotinicial, slotfinal)
 			}else{
 				this.selectedQuadrado = this.overQuadrado;
 				var q = this.squares[this.selectedQuadrado[0]][this.selectedQuadrado[1]];
@@ -125,8 +124,30 @@ class Tabuleiro {
 		
 	}
 
+	deselectQuadrado(){
+		for(var i =0; i < this.possiblePlays.length;i++){
+			var temp = this.possiblePlays[i];
+			var removeColorPossible = this.squares[temp[0]][temp[1]];
+			removeColorPossible.changeColorSelected(true);
+		}
+		this.possiblePlays = []; 
+		var q = this.squares[this.selectedQuadrado[0]][this.selectedQuadrado[1]];
+		q.changeColorSelected(true);
+		this.selectedQuadrado = null;
+	}
+
 	getselectQuadrado(){
 		return this.selectedQuadrado;
+	}
+
+	checkinPossiblePlay(z,x){
+		for(var i =0; i < this.possiblePlays.length;i++){
+			var temp = this.possiblePlays[i];
+			if(z == temp[0] && x == temp[1]){
+				return true;
+			}
+		}
+		return false;
 	}
 
 	checkPosition(z,x){
