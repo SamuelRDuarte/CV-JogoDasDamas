@@ -1,0 +1,133 @@
+function drawModel( modeloVertexPositionBuffer,
+	modeloVertexColorBuffer,
+	modeloVertexIndexBuffer,
+	angleXX, angleYY, angleZZ,
+	sx, sy, sz,
+	tx, ty, tz,
+	mvMatrix,
+	primitiveType ) {
+
+	// Pay attention to transformation order !!
+
+	mvMatrix = mult( mvMatrix, translationMatrix( tx, ty, tz ) );
+	mvMatrix = mult( mvMatrix, rotationZZMatrix( angleZZ ) );
+	mvMatrix = mult( mvMatrix, rotationYYMatrix( angleYY ) );
+	mvMatrix = mult( mvMatrix, rotationXXMatrix( angleXX ) );
+	mvMatrix = mult( mvMatrix, scalingMatrix( sx, sy, sz ) );
+			
+	// Passing the Model View Matrix to apply the current transformation
+	var mvUniform = gl.getUniformLocation(shaderProgram, "uMVMatrix");
+	gl.uniformMatrix4fv(mvUniform, false, new Float32Array(flatten(mvMatrix)));
+
+	// Passing the buffers
+	gl.bindBuffer(gl.ARRAY_BUFFER, modeloVertexPositionBuffer);
+	gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, modeloVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+
+	// Colors
+	gl.bindBuffer(gl.ARRAY_BUFFER, modeloVertexColorBuffer);
+	gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, modeloVertexColorBuffer.itemSize, gl.FLOAT, false, 0, 0);
+
+	// The vertex indices
+	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, modeloVertexIndexBuffer);
+
+	// Drawing the triangles
+	gl.drawElements(gl.TRIANGLES, modeloVertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
+}
+
+
+function initBuffersDamas(){
+	for(var i = 0; i < 24; i++){
+		var dama = damas[i];
+		//console.log(dama);
+		// Coordinates
+		var colors = dama.getColors();
+		var vertices = dama.getVertices();
+		var vertexIndices = dama.getVertexIndices();
+
+		var damaVertexPositionBuffer = gl.createBuffer();
+		gl.bindBuffer(gl.ARRAY_BUFFER, damaVertexPositionBuffer);
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+		damaVertexPositionBuffer.itemSize = 3;
+		damaVertexPositionBuffer.numItems = vertices.length / 3;
+
+		// Textures
+		/*boardVertexTextureCoordBuffer = gl.createBuffer();
+		gl.bindBuffer(gl.ARRAY_BUFFER, boardVertexTextureCoordBuffer);
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(textureCoords), gl.STATIC_DRAW);
+		boardVertexTextureCoordBuffer.itemSize = 2;
+		boardVertexTextureCoordBuffer.numItems = 24;*/
+
+		// Colors
+		var damaVertexColorBuffer = gl.createBuffer();
+		gl.bindBuffer(gl.ARRAY_BUFFER, damaVertexColorBuffer);
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
+		damaVertexColorBuffer.itemSize = 3;
+		damaVertexColorBuffer.numItems = vertices.length / 3;
+
+		// Vertex indices
+		var damaVertexIndexBuffer = gl.createBuffer();
+		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, damaVertexIndexBuffer);
+		gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(vertexIndices), gl.STATIC_DRAW);
+		damaVertexIndexBuffer.itemSize = 1;
+		damaVertexIndexBuffer.numItems = 36;
+
+		damasVertexPositionBuffer.push(damaVertexPositionBuffer);
+		damasVertexColorBuffer.push(damaVertexColorBuffer);
+		damasVertexIndexBuffer.push(damaVertexIndexBuffer);
+	}
+}
+
+function initBuffersQuadrados(){
+	for (var i = 0; i < 8; i++) {			
+		var line = squares[i];
+
+		for (var j = 0; j < line.length; j++) {					
+			var quadrado = line[j];
+
+			// Coordinates
+			var vertices = quadrado.getVertices();
+			var colors = quadrado.getColors();
+			//var vertexIndices = quadrado.getVertexIndices();
+
+			var quadradoVertexPositionBuffer = gl.createBuffer();
+			gl.bindBuffer(gl.ARRAY_BUFFER, quadradoVertexPositionBuffer);
+			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+			quadradoVertexPositionBuffer.itemSize = 3;
+			quadradoVertexPositionBuffer.numItems = vertices.length / 3;
+
+			gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, 
+				quadradoVertexPositionBuffer.itemSize, 
+				gl.FLOAT, false, 0, 0);
+
+			// Textures
+			/*boardVertexTextureCoordBuffer = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, boardVertexTextureCoordBuffer);
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(textureCoords), gl.STATIC_DRAW);
+            boardVertexTextureCoordBuffer.itemSize = 2;
+            boardVertexTextureCoordBuffer.numItems = 24;*/
+
+            // Colors
+            var quadradoVertexColorBuffer = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, quadradoVertexColorBuffer);
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
+            quadradoVertexColorBuffer.itemSize = 3;
+			quadradoVertexColorBuffer.numItems = vertices.length / 3;
+
+			gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, 
+				quadradoVertexColorBuffer.itemSize, 
+				gl.FLOAT, false, 0, 0);
+	
+
+			/* // Vertex indices
+			var quadradoVertexIndexBuffer = gl.createBuffer();
+			gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, quadradoVertexIndexBuffer);
+			gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(vertexIndices), gl.STATIC_DRAW);
+			quadradoVertexIndexBuffer.itemSize = 1;
+			quadradoVertexIndexBuffer.numItems = 36; */
+
+			squaresVertexPositionBuffer.push(quadradoVertexPositionBuffer);
+            squaresVertexColorBuffer.push(quadradoVertexColorBuffer);
+			//squaresVertexIndexBuffer.push(quadradoVertexIndexBuffer);
+		}
+	}
+}

@@ -88,7 +88,8 @@ class Tabuleiro {
 		old_q.changeColor(true);
 		q.changeColor(false);
 		console.log(q);
-		initBuffers();
+		//initBuffersQuadrado(q);
+		//initBuffersQuadrado(old_q);
 
 	}
 
@@ -103,22 +104,24 @@ class Quadrado {
 	constructor(x ,y=0.0,z ,comp=1.0,alt=0.5, color) {
 		this.colorBlack = color;
 		this.id = [x,y,z];
-		this.vertices = [	x-comp/2,	y,	    z+comp/2,   //P1
+		this.vertices = [];
+		/* this.vertices = [	x-comp/2,	y,	    z+comp/2,   //P1
 							x-comp/2,	y,	    z-comp/2,   //P2
 							x+comp/2,	y,		z-comp/2,   //P3
 							x+comp/2,	y,		z+comp/2,   //P4
 							x+comp/2,	y-alt,	z-comp/2,   //P5
 							x+comp/2,	y-alt,	z+comp/2,   //P6
 							x-comp/2,	y-alt,	z+comp/2,   //P7
-                            x-comp/2,	y-alt,	z-comp/2];  //P8
-                            
+                            x-comp/2,	y-alt,	z-comp/2];  //P8 */
 		
-		this.vertexIndices = [	0,3,5,	5,6,0,	// Front (P1,P4,P6,P7)	
+		this,this.setVertices(x,y,z,comp,alt);
+		
+		/* this.vertexIndices = [	0,3,5,	5,6,0,	// Front (P1,P4,P6,P7)	
 								1,2,4,	4,7,1,	// Back	 (P2,P3,P5,P8)   	
 								0,1,2,	2,3,0,	// Top	  (P1,P2,P3,P4)  	
 								6,7,4,	4,5,6,	// Bottom	(P7,P8,P5,P6)
 								3,2,4,	4,5,3,	// Right    (P4,P3,P5,P6)	
-								0,1,7,	7,6,0];	// Left		 (P1,P2,P8,P7)
+								0,1,7,	7,6,0];	// Left		 (P1,P2,P8,P7) */
 
 		this.colors =  []
 		var cor = 0.75;			//trocar a ordem da cor
@@ -170,29 +173,86 @@ class Quadrado {
 		}
 		
 	}
+
+	setVertices(x,y,z,comp,alt){
+		this.vertices = [	//FRONT
+			x-comp/2,	y,	    z+comp/2,   //P1
+			x+comp/2,	y,		z+comp/2,   //P4
+			x+comp/2,	y-alt,	z+comp/2,   //P6
+
+			x+comp/2,	y-alt,	z+comp/2,   //P6
+			x-comp/2,	y-alt,	z+comp/2,   //P7
+			x-comp/2,	y,	    z+comp/2,   //P1
+
+			//BACK
+			x-comp/2,	y,	    z-comp/2,   //P2
+			x+comp/2,	y,		z-comp/2,   //P3
+			x+comp/2,	y-alt,	z-comp/2,   //P5
+			
+			x+comp/2,	y-alt,	z-comp/2,   //P5
+			x-comp/2,	y-alt,	z-comp/2,
+			x-comp/2,	y,	    z-comp/2,   //P2
+
+			//TOP
+			x-comp/2,	y,	    z+comp/2,   //P1
+			x-comp/2,	y,	    z-comp/2,   //P2
+			x+comp/2,	y,		z-comp/2,   //P3
+
+			x+comp/2,	y,		z-comp/2,   //P3
+			x+comp/2,	y,		z+comp/2,   //P4
+			x-comp/2,	y,	    z+comp/2,   //P1
+
+			//BOTTOM
+			x-comp/2,	y-alt,	z+comp/2,   //P7
+			x-comp/2,	y-alt,	z-comp/2,  //P8
+			x+comp/2,	y-alt,	z-comp/2,   //P5
+
+			x+comp/2,	y-alt,	z-comp/2,   //P5
+			x+comp/2,	y-alt,	z+comp/2,   //P6
+			x-comp/2,	y-alt,	z+comp/2,   //P7
+
+			//RIGHT
+			x+comp/2,	y,		z+comp/2,   //P4
+			x+comp/2,	y,		z-comp/2,   //P3
+			x+comp/2,	y-alt,	z-comp/2,   //P5
+
+			x+comp/2,	y-alt,	z-comp/2,   //P5
+			x+comp/2,	y-alt,	z+comp/2,   //P6
+			x+comp/2,	y,		z+comp/2,   //P4
+
+			//LEFT
+			x-comp/2,	y,	    z+comp/2,   //P1
+			x-comp/2,	y,	    z-comp/2,   //P2
+			x-comp/2,	y-alt,	z-comp/2,  //P8
+
+			x-comp/2,	y-alt,	z-comp/2,  //P8
+			x-comp/2,	y-alt,	z+comp/2,   //P7
+			x-comp/2,	y,	    z+comp/2];   //P1 
+	}
 }
 
 class Damas{
 	constructor(x,y,z,comp=0.5,alt=0.5, team){
 		this.equipa = team;
 		this.id = [x,y,z];
+		this.vertices = [];
 
-		this.vertices = [	x-comp/2,	y+alt,	    z+comp/2,   //P1
+		/* this.vertices = [	x-comp/2,	y+alt,	    z+comp/2,   //P1
 							x-comp/2,	y+alt,	    z-comp/2,   //P2
 							x+comp/2,	y+alt,		z-comp/2,   //P3
 							x+comp/2,	y+alt,		z+comp/2,   //P4
 							x+comp/2,	y,	z-comp/2,   //P5
 							x+comp/2,	y,	z+comp/2,   //P6
 							x-comp/2,	y,	z+comp/2,   //P7
-							x-comp/2,	y,	z-comp/2];  //P8
-			
+							x-comp/2,	y,	z-comp/2];  //P8 */
+		this.setVertices(x,y,z,comp,alt);
 
-		this.vertexIndices = [	0,3,5,	5,6,0,	// Front (P1,P4,P6,P7)	
+		/* this.vertexIndices = [	0,3,5,	5,6,0,	// Front (P1,P4,P6,P7)	
 				1,2,4,	4,7,1,	// Back	 (P2,P3,P5,P8)   	
 				0,1,2,	2,3,0,	// Top	  (P1,P2,P3,P4)  	
 				6,7,4,	4,5,6,	// Bottom	(P7,P8,P5,P6)
 				3,2,4,	4,5,3,	// Right    (P4,P3,P5,P6)	
-				0,1,7,	7,6,0];	// Left		 (P1,P2,P8,P7)
+				0,1,7,	7,6,0];	// Left		 (P1,P2,P8,P7) */
 		
 		this.colors =  []
 		 
@@ -228,5 +288,61 @@ class Damas{
 
 	getColors() {
 		return this.colors;
+	}
+
+	setVertices(x,y,z,comp,alt){
+		this.vertices = [	//FRONT
+			x-comp/2,	y+alt,	    z+comp/2,   //P1
+			x+comp/2,	y+alt,		z+comp/2,   //P4
+			x+comp/2,	y,	z+comp/2,   //P6
+
+			x+comp/2,	y,	z+comp/2,   //P6
+			x-comp/2,	y,	z+comp/2,   //P7
+			x-comp/2,	y+alt,	    z+comp/2,   //P1
+
+			//BACK
+			x-comp/2,	y+alt,	    z-comp/2,   //P2
+			x+comp/2,	y+alt,		z-comp/2,   //P3
+			x+comp/2,	y,	z-comp/2,   //P5
+			
+			x+comp/2,	y,	z-comp/2,   //P5
+			x-comp/2,	y,	z-comp/2,
+			x-comp/2,	y+alt,	    z-comp/2,   //P2
+
+			//TOP
+			x-comp/2,	y+alt,	    z+comp/2,   //P1
+			x-comp/2,	y+alt,	    z-comp/2,   //P2
+			x+comp/2,	y+alt,		z-comp/2,   //P3
+
+			x+comp/2,	y+alt,		z-comp/2,   //P3
+			x+comp/2,	y+alt,		z+comp/2,   //P4
+			x-comp/2,	y+alt,	    z+comp/2,   //P1
+
+			//BOTTOM
+			x-comp/2,	y,	z+comp/2,   //P7
+			x-comp/2,	y,	z-comp/2,  //P8
+			x+comp/2,	y,	z-comp/2,   //P5
+
+			x+comp/2,	y,	z-comp/2,   //P5
+			x+comp/2,	y,	z+comp/2,   //P6
+			x-comp/2,	y,	z+comp/2,   //P7
+
+			//RIGHT
+			x+comp/2,	y+alt,		z+comp/2,   //P4
+			x+comp/2,	y+alt,		z-comp/2,   //P3
+			x+comp/2,	y,	z-comp/2,   //P5
+
+			x+comp/2,	y,	z-comp/2,   //P5
+			x+comp/2,	y,	z+comp/2,   //P6
+			x+comp/2,	y+alt,		z+comp/2,   //P4
+
+			//LEFT
+			x-comp/2,	y+alt,	    z+comp/2,   //P1
+			x-comp/2,	y+alt,	    z-comp/2,   //P2
+			x-comp/2,	y,	z-comp/2,  //P8
+
+			x-comp/2,	y,	z-comp/2,  //P8
+			x-comp/2,	y,	z+comp/2,   //P7
+			x-comp/2,	y+alt,	    z+comp/2];   //P1 
 	}
 }
