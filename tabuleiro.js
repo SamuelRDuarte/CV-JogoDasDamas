@@ -117,7 +117,7 @@ class Tabuleiro {
 				this.selectedQuadrado = this.overQuadrado;
 				var q = this.squares[this.selectedQuadrado[0]][this.selectedQuadrado[1]];
 				var dama = this.slotsOcupados[this.selectedQuadrado[0]][this.selectedQuadrado[1]];
-				dama.apagarDama();
+				//dama.apagarDama();
 				q.changeColorSelected(false);	
 				this.getPossiblePlays(this.selectedQuadrado[0],this.selectedQuadrado[1]);	
 				

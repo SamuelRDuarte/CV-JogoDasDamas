@@ -27,8 +27,53 @@ function setEventListeners( canvas ){
     document.onkeyup = handleKeyUp;
     
     document.onkeydown = handleKeyDown;
-    
 
+    document.addEventListener('keydown', function(event) {
+        if (event.code == 'KeyA') {
+            var q = tabuleiro.getoverQuadrado();
+            var x = (q[1]+7)%8;
+            tabuleiro.setoverQuadrado(q[0],x);
+            console.log(tabuleiro.getoverQuadrado());
+        }
+    });
+
+    document.addEventListener('keydown', function(event) {
+        if (event.code == 'KeyD' ) {
+            var q = tabuleiro.getoverQuadrado();
+        var x = (q[1]+1)%8;
+        tabuleiro.setoverQuadrado(q[0],x);
+        console.log(tabuleiro.getoverQuadrado());
+        }
+    });
+      
+    document.addEventListener('keydown', function(event) {
+        if (event.code == 'KeyW' ) {
+            var q = tabuleiro.getoverQuadrado();
+            var y = (q[0]+7)%8;
+            tabuleiro.setoverQuadrado(y,q[1]);
+            console.log(tabuleiro.getoverQuadrado());
+        }
+    });
+      
+    document.addEventListener('keydown', function(event) {
+        if (event.code == 'KeyS' ) {
+            var q = tabuleiro.getoverQuadrado();
+            var y = (q[0]+1) % 8;
+            tabuleiro.setoverQuadrado(y,q[1]);
+            console.log(tabuleiro.getoverQuadrado());
+        }
+    });
+
+    document.addEventListener('keydown', function(event) {
+        if (event.keyCode == 13 ) {
+            var q = tabuleiro.getoverQuadrado();
+            tabuleiro.setselectQuadrado(q[0],q[1]);
+            console.log(tabuleiro.getselectQuadrado());
+        }
+    });
+
+      
+    
     // Dropdown lists
 
 
@@ -262,45 +307,48 @@ var currentlyPressedKeys = {};
 
 function handleKeys() {
 
-    if (currentlyPressedKeys[65] || currentlyPressedKeys[97]) {
+    
+      
+    // if (currentlyPressedKeys[65] || currentlyPressedKeys[97]) {
 
-        // Move Left key a
-        var q = tabuleiro.getoverQuadrado();
-        var x = (q[1]+7)%8;
-        tabuleiro.setoverQuadrado(q[0],x);
-        console.log(tabuleiro.getoverQuadrado());
+    //     // Move Left key a
+    //     var q = tabuleiro.getoverQuadrado();
+    //     var x = (q[1]+7)%8;
+    //     tabuleiro.setoverQuadrado(q[0],x);
+    //     console.log(tabuleiro.getoverQuadrado());
         
-    }
-    if (currentlyPressedKeys[68] || currentlyPressedKeys[100]){
-
-        // Move Right key d
-        var q = tabuleiro.getoverQuadrado();
-        var x = (q[1]+1)%8;
-        tabuleiro.setoverQuadrado(q[0],x);
-        console.log(tabuleiro.getoverQuadrado());
         
-    }
-    if (currentlyPressedKeys[87] || currentlyPressedKeys[119]) {
+    // }
+    // if (currentlyPressedKeys[68] || currentlyPressedKeys[100]){
 
-        // Move Up key  w
-        var q = tabuleiro.getoverQuadrado();
-        var y = (q[0]+7)%8;
-        tabuleiro.setoverQuadrado(y,q[1]);
-        console.log(tabuleiro.getoverQuadrado());
+    //     // Move Right key d
+    //     var q = tabuleiro.getoverQuadrado();
+    //     var x = (q[1]+1)%8;
+    //     tabuleiro.setoverQuadrado(q[0],x);
+    //     console.log(tabuleiro.getoverQuadrado());
         
-    }
-    if (currentlyPressedKeys[83] || currentlyPressedKeys[115]) {
+    // }
+    // if (currentlyPressedKeys[87] || currentlyPressedKeys[119]) {
 
-        // Move Down key s
-        var q = tabuleiro.getoverQuadrado();
-        var y = (q[0]+1) % 8;
-        tabuleiro.setoverQuadrado(y,q[1]);
-        console.log(tabuleiro.getoverQuadrado());
+    //     // Move Up key  w
+    //     var q = tabuleiro.getoverQuadrado();
+    //     var y = (q[0]+7)%8;
+    //     tabuleiro.setoverQuadrado(y,q[1]);
+    //     console.log(tabuleiro.getoverQuadrado());
+        
+    // }
+    // if (currentlyPressedKeys[83] || currentlyPressedKeys[115]) {
+
+    //     // Move Down key s
+    //     var q = tabuleiro.getoverQuadrado();
+    //     var y = (q[0]+1) % 8;
+    //     tabuleiro.setoverQuadrado(y,q[1]);
+    //     console.log(tabuleiro.getoverQuadrado());
        
-    }
-    if (currentlyPressedKeys[13]){
-        var q = tabuleiro.getoverQuadrado();
-        tabuleiro.setselectQuadrado(q[0],q[1]);
-        console.log(tabuleiro.getselectQuadrado());
-    }
+    // }
+    // if (currentlyPressedKeys[13]){
+    //     var q = tabuleiro.getoverQuadrado();
+    //     tabuleiro.setselectQuadrado(q[0],q[1]);
+    //     console.log(tabuleiro.getselectQuadrado());
+    // }
 }
