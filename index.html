@@ -80,6 +80,7 @@
     <!-- WebGL code -->
     <script type="text/javascript" src="initShaders.js"></script>
     
+    <script type="text/javascript" src="fps.js"></script>
     <script type="text/javascript" src="index.js"></script>
     <script type="text/javascript" src="EventHandlers.js"></script>
 
@@ -92,66 +93,83 @@
 
 <body onload="runWebGL();">
 
-    <div style="text-align: center">
-		
-		<p>Applying a texture and blending to the model's faces</p>
-		
-		<canvas id="my-canvas" style="border:1px solid #000000;" width="600" height="600" ></canvas>
-        <p>Use cursor keys to spin and <code>Page Up</code>/<code>Page Down</code> to zoom out/in.</p>
-		
-		<p>Press any mouse button and move the cursor to rotate the models.</p>
-		
-		<p>XX rotation: 
-			
-		<button id="XX-on-off-button">On / Off</button>
+    <div style="width: 100%; display: table;">
+        <div style="display: table-row;">
+            <div style="width: 20%; display: table-cell;"></div>
+            <div style="width: 30%; display: table-cell; ">
+                <p style="text-align: center;">Draughts Game</p>
+                <canvas id="my-canvas" style="border:1px solid #000000;" width="600" height="600" ></canvas>
+            </div>
+    
+            <div style="width: 30%; display: table-cell; ">
+                <br />
+                <br />
+                <p> Playing : <a id="current-team"></a></p>
+    
+                <p> Team Bege <a id="teamBege-score"></a> - Team Red <a id="teamRead-score"></a></p>
+    
+                <p> FPS : <a id="fps"></a></p>
 
-	    <button id="XX-direction-button">Change Direction</button>
+                <button id="give-up">Give Up</button>
 
-	    <button id="XX-slower-button">Slower</button>
-
-	    <button id="XX-faster-button">Faster</button>
-
-		</p>
-		
-		<p>YY rotation: 
-			
-		<button id="YY-on-off-button">On / Off</button>
-
-	    <button id="YY-direction-button">Change Direction</button>
-
-	    <button id="YY-slower-button">Slower</button>
-
-	    <button id="YY-faster-button">Faster</button>
-
-		</p>
-		
-		<p>ZZ rotation: 
-			
-		<button id="ZZ-on-off-button">On / Off</button>
-
-	    <button id="ZZ-direction-button">Change Direction</button>
-
-	    <button id="ZZ-slower-button">Slower</button>
-
-	    <button id="ZZ-faster-button">Faster</button>
-
-		</p>
-		
-		<p>Choose the <b>projection type</b>:
-		
-        <select id="projection-selection">
-			<option value="0">Orthogonal Projection</option>
-			<option value="1">Perspective Projection</option>
-        </select>
-        
-        </p>
+                <button id="reset-game">Reset Game</button>
+    
+                <p>Use cursor keys to spin and <code>Page Up</code>/<code>Page Down</code> to zoom out/in.</p>
                 
-		<p>
-		
-		<button id="reset-button">Reset</button>
-				
-		</p>
-				
+                <p>Press any mouse button and move the cursor to rotate the models.</p>
+                
+                <p>XX rotation: 
+                    
+                <button id="XX-on-off-button">On / Off</button>
+    
+                <button id="XX-direction-button">Change Direction</button>
+    
+                <button id="XX-slower-button">Slower</button>
+    
+                <button id="XX-faster-button">Faster</button>
+    
+                </p>
+                
+                <p>YY rotation: 
+                    
+                <button id="YY-on-off-button">On / Off</button>
+    
+                <button id="YY-direction-button">Change Direction</button>
+    
+                <button id="YY-slower-button">Slower</button>
+    
+                <button id="YY-faster-button">Faster</button>
+    
+                </p>
+                
+                <p>ZZ rotation: 
+                    
+                <button id="ZZ-on-off-button">On / Off</button>
+    
+                <button id="ZZ-direction-button">Change Direction</button>
+    
+                <button id="ZZ-slower-button">Slower</button>
+    
+                <button id="ZZ-faster-button">Faster</button>
+    
+                </p>
+                
+                <p>Choose the <b>projection type</b>:
+                
+                <select id="projection-selection">
+                    <option value="0">Orthogonal Projection</option>
+                    <option value="1">Perspective Projection</option>
+                </select>
+                
+                </p>
+                        
+                <p>
+                
+                <button id="reset-button">Reset View</button>
+                        
+                </p>
+            </div>
+        </div>	
 	</div>
 </body>
 
@@ -161,6 +179,7 @@
       document.getElementById("demo").innerHTML = x;
     }
     </script>
+
 
     
 

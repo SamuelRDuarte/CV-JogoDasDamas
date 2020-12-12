@@ -14,19 +14,19 @@ function setEventListeners( canvas ){
 
     // From learningwebgl.com
 
-    function handleKeyDown(event) {
+    // function handleKeyDown(event) {
 
-        currentlyPressedKeys[event.keyCode] = true;
-    }
+    //     currentlyPressedKeys[event.keyCode] = true;
+    // }
 
-    function handleKeyUp(event) {
+    // function handleKeyUp(event) {
 
-        currentlyPressedKeys[event.keyCode] = false;
-    }
+    //     currentlyPressedKeys[event.keyCode] = false;
+    // }
 
-    document.onkeyup = handleKeyUp;
+    // document.onkeyup = handleKeyUp;
     
-    document.onkeydown = handleKeyDown;
+    // document.onkeydown = handleKeyDown;
 
     document.addEventListener('keydown', function(event) {
         if (event.code == 'KeyA') {
@@ -214,31 +214,17 @@ function setEventListeners( canvas ){
     document.getElementById("reset-button").onclick = function(){
 
         // The initial values
-        tx = 0.0;
-        ty = 0.0;
-        tz = 0.0;
-
-        angleXX = 40;
-        angleYY = 0.0;
-        angleZZ = 0.0;
-
-        sx = 0.13;
-        sy = 0.13;
-        sz = 0.13;
-
-        rotationXX_ON = 0;
-        rotationXX_DIR = 1;
-        rotationXX_SPEED = 1;
-
-        rotationYY_ON = 0;
-        rotationYY_DIR = 1;
-        rotationYY_SPEED = 1;
-
-        rotationZZ_ON = 0;
-        rotationZZ_DIR = 1;
-        rotationZZ_SPEED = 1;
+        resetView();
     };
 
+    document.getElementById("reset-game").onclick = function(){
+        reset();
+    };
+
+    document.getElementById("give-up").onclick = function(){
+        tabuleiro.desistir();
+
+    }
 
 }
 

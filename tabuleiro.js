@@ -16,8 +16,10 @@ class Tabuleiro {
 		this.selectedSquare = null;
 
 		this.currentTeam = false; //false -> equipa branca
-		this.pecasComidasRead = [];
-		this.pecasComidasBege = [];
+		this.pecasPerdidasRead = [];
+		this.pecasPerdidasBege = [];
+
+		this.winner = null;
 		
 		this.squares = new Array(8);
 		for (var i = 0; i < this.squares.length; i++) {  //linha
@@ -69,6 +71,28 @@ class Tabuleiro {
 		}
 		console.log(this.damas);
 		
+	}
+
+	desistir(){
+		this.winner = !this.currentTeam;
+	}
+
+
+	setWinner(){
+		if(this.pecasPerdidasBege.length == 12){
+			this.winner = true;
+		}
+		else if(this.pecasPerdidasRead.length == 12){
+			this.winner = false;
+		}
+	}
+
+	getWinner(){
+		return this.winner;
+	}
+
+	getScore(){
+		return [this.pecasPerdidasRead.length, this.pecasPerdidasBege.length];
 	}
 
 	getSquaresVertices() {
@@ -142,28 +166,36 @@ class Tabuleiro {
 		this.slotsOcupados[slotinicial[0]][slotinicial[1]] = null;
 		this.slotsOcupados[slotfinal[0]][slotfinal[1]] = dama;
 		var damaCapturada = null;
-		if(Math.abs(slotfinal[1]-slotinicial[1]) == 2){
-			if(this.currentTeam){ //equipa bege
-				if(this.slotsOcupados[slotinicial[0]-1][slotinicial[1]-1].getEquipa() != this.currentTeam){
+		if(Math.abs(slotfinal[1]-slotinicial[1]) == 2){//houve captura
+			console.log("Captura");
+			if(!this.currentTeam){ //equipa branca
+				console.log("result: "+(slotfinal[1]-slotinicial[1]))
+				if(slotinicial[1]-slotfinal[1] == 2){
 					damaCapturada = this.slotsOcupados[slotinicial[0]-1][slotinicial[1]-1];
+					this.slotsOcupados[slotinicial[0]-1][slotinicial[1]-1] = null; //tirar peça do tabuleiro
 				}
-				else if(this.slotsOcupados[slotinicial[0]-1][slotinicial[1]+1].getEquipa() != this.currentTeam){
-					damaCapturada = slotsOcupados[slotinicial[0]-1][slotinicial[1]+1];
+				else if(slotinicial[1]-slotfinal[1] == -2){
+					damaCapturada = this.slotsOcupados[slotinicial[0]-1][slotinicial[1]+1];
+					this.slotsOcupados[slotinicial[0]-1][slotinicial[1]+1] = null; //tirar peça do tabuleiro
 				}
-				this.pecasComidasBege.push(damaCapturada);
-			}else{//equipa vermelha
-				if(this.slotsOcupados[slotinicial[0]+1][slotinicial[1]-1].getEquipa() != this.currentTeam){
-					damaCapturada = slotsOcupados[slotinicial[0]+1][slotinicial[1]-1];
+				console.log("DAMA_Red: "+ damaCapturada);
+				this.pecasPerdidasRead.push(damaCapturada);
+			}else{
+				if(slotinicial[1]-slotfinal[1] == 2){
+					damaCapturada = this.slotsOcupados[slotinicial[0]+1][slotinicial[1]-1];
+					this.slotsOcupados[slotinicial[0]+1][slotinicial[1]-1] = null; //tirar peça do tabuleiro
 				}
-				else if(this.slotsOcupados[slotinicial[0]+1][slotinicial[1]+1].getEquipa() != this.currentTeam){
-					damaCapturada = slotsOcupados[slotinicial[0]+1][slotinicial[1]+1];
+				else if(slotinicial[1]-slotfinal[1] == -2){
+					damaCapturada = this.slotsOcupados[slotinicial[0]+1][slotinicial[1]+1];
+					this.slotsOcupados[slotinicial[0]+1][slotinicial[1]+1] = null; //tirar peça do tabuleiro
 				}
-				this.pecasComidasRead.push(damaCapturada);
+				this.pecasPerdidasBege.push(damaCapturada);
 			}
+			damaCapturada.apagarDama(); 
 		}
 
 		this.currentTeam = !this.currentTeam;
-		
+		this.setWinner();
 	}
 
 	deselectQuadrado(){

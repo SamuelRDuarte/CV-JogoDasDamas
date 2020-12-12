@@ -13,6 +13,21 @@ var squares = tabuleiro.getSquares();
 var damas = tabuleiro.getDamas();
 //console.log(damas);
 
+function reset(){
+	tabuleiro = new Tabuleiro();
+	squares = tabuleiro.getSquares();
+	damas = tabuleiro.getDamas();
+	gl = null;
+	shaderProgram = null;
+	squaresVertexPositionBuffer = null;
+	squaresVertexColorBuffer = null;
+	damasVertexPositionBuffer = null;
+	damasVertexColorBuffer = null;
+	resetView();
+	runWebGL();
+	
+}
+
 // NEW --- Buffers
 
 var squaresVertexPositionBuffer = null;
@@ -26,6 +41,10 @@ var damasVertexColorBuffer = null;
 // The global transformation parameters
 
 // The translation vector
+
+
+
+
 
 var tx = 0.0;
 var ty = 0.0;
@@ -69,6 +88,31 @@ var projectionType = 0;
 
 // NEW --- Storing the vertices defining the squares faces
 
+function resetView(){
+	tx = 0.0;
+	ty = 0.0;
+	tz = 0.0;
+
+	angleXX = 40;
+	angleYY = 0.0;
+	angleZZ = 0.0;
+
+	sx = 0.13;
+	sy = 0.13;
+	sz = 0.13;
+
+	rotationXX_ON = 0;
+	rotationXX_DIR = 1;
+	rotationXX_SPEED = 1;
+
+	rotationYY_ON = 0;
+	rotationYY_DIR = 1;
+	rotationYY_SPEED = 1;
+
+	rotationZZ_ON = 0;
+	rotationZZ_DIR = 1;
+	rotationZZ_SPEED = 1;
+}
 
 // Texture coordinates for the quadrangular faces
 
@@ -287,6 +331,8 @@ function drawModelDama( dama,
 
 function drawScene() {
 	
+	
+
 	var pMatrix;
 	
 	var mvMatrix = mat4();
@@ -359,6 +405,8 @@ function drawScene() {
 			primitiveType );
 	}
 	
+	outputInfos();
+
 	/* for (var i = 0; i < squaresVertexPositionBuffer.length; i++) { //desenhar quadrado a quadrado
 		drawModelTeste(  squaresVertexPositionBuffer[i],
 					squaresVertexColorBuffer[i],
@@ -380,6 +428,7 @@ function drawScene() {
 					mvMatrix,
 					primitiveType );
 	} */
+
 	
 	           
 }
@@ -446,8 +495,35 @@ function tick() {
 //  User Interaction
 //
 
+
+
 function outputInfos(){
-		
+	
+	countFrames();
+
+	if(!tabuleiro.currentTeam){
+		document.getElementById('current-team').innerHTML = "Team Bege";
+		document.getElementById('give-up').textContent = "Give up Team Bege";
+	}
+	else{
+		document.getElementById('current-team').innerHTML = "Team Red";
+		document.getElementById('give-up').textContent = "Give up Team Red";
+	}
+	
+	if(tabuleiro.winner != null){
+		if(tabuleiro.winner){
+			alert("Team Red is the winner!");
+		}
+		if(!tabuleiro.winner){
+			alert("Team Bege is the winner!");
+		}
+		reset();
+	}
+
+	var scores = tabuleiro.getScore();
+	document.getElementById("teamBege-score").innerHTML = scores[0];
+	document.getElementById("teamRead-score").innerHTML = scores[1];
+	
 }
 
 
