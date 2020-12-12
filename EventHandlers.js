@@ -95,6 +95,16 @@ function setEventListeners( canvas ){
         }
     });
 
+    var boardColor = document.getElementById("boardColor-selection");
+
+    boardColor.addEventListener("click", function(){
+
+        // Getting the selection
+
+        var p = boardColor.selectedIndex;
+        tabuleiro.changeTabuleiroColor(p);
+    });
+
     // Button events
 
     document.getElementById("XX-on-off-button").onclick = function(){

@@ -302,6 +302,15 @@ class Tabuleiro {
 		}
 
 	}
+
+	changeTabuleiroColor(cor){
+		for(var i = 0; i < this.squares.length; i++){
+			var linha = this.squares[i];
+			for(var j = 0; j < linha.length; j++){
+				linha[j].setCor(cor);
+			}
+		}
+	}
 }
 
 class Quadrado {
@@ -310,9 +319,10 @@ class Quadrado {
 	// x, y and z are idCoord (center of top face)
 	// s is side
 	// h is height
-	constructor(x ,y=0.0,z ,comp=1.0,alt=0.5, color) {
+	constructor(x ,y=0.0,z ,comp=1.0,alt=0.5, color,corid=0) {
 		this.colorBlack = color;
 		this.id = [x,y,z];
+		this.corID = corid;
 		this.vertices = [];
 		/* this.vertices = [	x-comp/2,	y,	    z+comp/2,   //P1
 							x-comp/2,	y,	    z-comp/2,   //P2
@@ -333,14 +343,44 @@ class Quadrado {
 								0,1,7,	7,6,0];	// Left		 (P1,P2,P8,P7) */
 
 		this.colors =  []
-		var cor = 0.75;			//trocar a ordem da cor
+		this.setCor(corid)
+		
+	}
+
+	setCor(corid){
+		this.corID = corid;
+		if(this.colorBlack){
+			switch(corid){
+				case 1://blue
+					this.setColors([0.0, 0.0, 1.0]);
+					break;
+				default://preto
+					this.setColors([0.25,0.25,0.25]);
+					break;
+			}
+		}else{
+			switch(corid){
+				case 1://blue
+					this.setColors([1.0, 1.0, 0.0]);
+					break;
+				default://branco
+					this.setColors([0.75,0.75,0.75]);
+					break;
+			}
+		}
+	}
+
+	setColors(cor){
+		/* var cor = 0.75;			//trocar a ordem da cor
 		if (this.colorBlack) {
 			cor = 0.25;
-		}
+		} */
 
 		var length = this.vertices.length;
-		for (var i = 0; i < length; i++) {
-			this.colors[i] = cor;
+		for (var i = 0; i < length; i+=3) {
+			this.colors[i] = cor[0];
+			this.colors[i+1] = cor[1];
+			this.colors[i+2] = cor[2];
 		}
 	}
 
@@ -366,13 +406,14 @@ class Quadrado {
 
 	changeColor(reset){
 		if(reset){
-			var cor = 0.75;
+			/* var cor = 0.75;
 			if (this.colorBlack) {
 				cor = 0.25;
 			}
 			for (var i = 0; i < this.colors.length; i++) {
 				this.colors[i] = cor;
-			}
+			} */
+			this.setCor(this.corID);
 		}else{
 			for(var i = 0; i < this.colors.length; i+=3){
 				this.colors[i] = 0.6;
@@ -385,7 +426,7 @@ class Quadrado {
 
 	changeColorSelected(reset){
 		if(reset){
-			var cor = 0.75;			//trocar a ordem da cor
+			/* var cor = 0.75;			//trocar a ordem da cor
 			if (this.colorBlack) {
 				cor = 0.25;
 			}
@@ -393,7 +434,8 @@ class Quadrado {
 			var length = this.vertices.length;
 			for (var i = 0; i < length; i++) {
 				this.colors[i] = cor;
-			}
+			} */
+			this.setCor(this.corID);
 		}else{
 			for(var i = 0; i < this.colors.length; i+=3){
 				this.colors[i] = 0.1;
