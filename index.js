@@ -502,11 +502,13 @@ function outputInfos(){
 	countFrames();
 
 	if(!tabuleiro.currentTeam){
-		document.getElementById('current-team').innerHTML = "Team Bege";
-		document.getElementById('give-up').textContent = "Give up Team Bege";
+		document.getElementById('current-team').innerHTML = " &nbsp; Team Beige &nbsp;  ";
+		document.getElementById('current-team').style.backgroundColor = "#F5F5DC";
+		document.getElementById('give-up').textContent = "Give up Team Beige";
 	}
 	else{
-		document.getElementById('current-team').innerHTML = "Team Red";
+		document.getElementById('current-team').innerHTML = " &nbsp; Team Red  &nbsp;";
+		document.getElementById('current-team').style.backgroundColor = "crimson";
 		document.getElementById('give-up').textContent = "Give up Team Red";
 	}
 	
@@ -520,11 +522,43 @@ function outputInfos(){
 		reset();
 	}
 
+	
+
 	var scores = tabuleiro.getScore();
 	document.getElementById("teamBege-score").innerHTML = scores[0];
 	document.getElementById("teamRead-score").innerHTML = scores[1];
 	
 }
+
+
+// score = 0;
+
+// function go(x){
+// $({score: 0}).animate({score: x},{
+// 	duration: 1000,
+// 	easing:"linear",
+// 	step: function(now, fx){
+// 	$("#teamBege-score").html(score + Math.floor(now));
+// 	},
+// 	queue:false,
+// 	complete: function(now, fx){
+// 	score += x;
+// 	}
+// });
+// $("#tag").fadeIn({
+// 	duration:700,
+// 	easing:"linear",
+// 	step:function(now, fx){
+// 	$(this).css("top", -55 * now  +"px");
+// 	}
+// }).fadeOut({
+// 	duration:300,
+// 	step:function(now, fx){
+// 	$(this).css("top",-55 * ( 2 - now) + "px");
+// 	}
+// });
+
+// }
 
 
 //----------------------------------------------------------------------------

@@ -354,14 +354,26 @@ class Quadrado {
 				case 1://blue
 					this.setColors([0.0, 0.0, 1.0]);
 					break;
+				case 2://castanho escuro
+					this.setColors([0.40, 0.26, 0.13]);
+					break;
+				case 3: //verde escuro
+					this.setColors([0.4, 0.5, 0.4]);
+					break;
 				default://preto
 					this.setColors([0.25,0.25,0.25]);
 					break;
 			}
 		}else{
 			switch(corid){
-				case 1://blue
-					this.setColors([1.0, 1.0, 0.0]);
+				case 1://cinzento
+					this.setColors([0.6, 0.6, 0.7]);
+					break;
+				case 2://castanho claro
+					this.setColors([0.7, 0.5, 0]);
+					break;
+				case 3: //branco
+					this.setColors([1,1,1]);
 					break;
 				default://branco
 					this.setColors([0.75,0.75,0.75]);
@@ -509,6 +521,7 @@ class Damas{
 		this.equipa = team;
 		this.id = [x,y,z];
 		this.vertices = [];
+		
 
 		/* this.vertices = [	x-comp/2,	y+alt,	    z+comp/2,   //P1
 							x-comp/2,	y+alt,	    z-comp/2,   //P2

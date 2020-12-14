@@ -65,6 +65,8 @@
 
     </script>
 
+    <link rel="stylesheet" href="utils/css.css">
+
     <!-- The JS files -->
 
     <!-- Some useful functions for browser compatibility -->
@@ -91,14 +93,14 @@
 </head>
 
 
-<body onload="runWebGL();">
+<body onload="runWebGL();" >
 
     <div style="width: 100%; display: table;">
         <div style="display: table-row;">
             <div style="width: 20%; display: table-cell;"></div>
             <div style="width: 30%; display: table-cell; ">
                 <p style="text-align: center;">Draughts Game</p>
-                <canvas id="my-canvas" style="border:1px solid #000000;" width="600" height="600" ></canvas>
+                <canvas id="my-canvas" style="background-color: #664400; background-image: url('https://www.transparenttextures.com/patterns/wood-pattern.png');" width="600" height="600" ></canvas>
             </div>
     
             <div style="width: 30%; display: table-cell; ">
@@ -106,7 +108,36 @@
                 <br />
                 <p> Playing : <a id="current-team"></a></p>
     
-                <p> Team Bege <a id="teamBege-score"></a> - Team Red <a id="teamRead-score"></a></p>
+                <section class="container">
+                    <!-- <div class="one"> -->
+                        <!-- <div id="scores">
+                            Team Bege   
+                          </div> -->
+                          <!-- <div id="tag">
+                            +100  
+                          </div> -->
+                          <div id="teamBege-score">
+                        </div>
+
+                    
+                    <!-- </div> -->
+                    <!-- <div class="two"> -->
+
+                        <!-- <div id="scores">
+                            Team Red
+                          </div> -->
+                          <!-- <div id="tag">
+                            +100  
+                          </div> -->
+                          <div id="teamRead-score">
+                            
+                        </div> 
+                    <!-- </div> -->
+                </section>
+
+                    
+                   
+                
     
                 <p> FPS : <a id="fps"></a></p>
 
@@ -118,11 +149,14 @@
                 
                     <select id="boardColor-selection">
                         <option value="0">Black and White</option>
-                        <option value="1">Blue and Yellow</option>
+                        <option value="1">Blue and Gray</option>
+                        <option value="2">Dark Brown and Light Brown</option>
+                        <option value="3">Green and white</option>
                     </select>
                     
-                    </p>
-    
+                </p>
+
+                
                 <p>Use cursor keys to spin and <code>Page Up</code>/<code>Page Down</code> to zoom out/in.</p>
                 
                 <p>Press any mouse button and move the cursor to rotate the models.</p>
@@ -168,6 +202,7 @@
                 <select id="projection-selection">
                     <option value="0">Orthogonal Projection</option>
                     <option value="1">Perspective Projection</option>
+                    
                 </select>
                 
                 </p>
