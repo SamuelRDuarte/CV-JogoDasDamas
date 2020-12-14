@@ -63,7 +63,6 @@ var sy = 0.13;
 var sz = 0.13;
 
 // NEW - Animation controls
-
 var rotationXX_ON = 0;
 var rotationXX_DIR = 1;
 var rotationXX_SPEED = 1;
@@ -451,18 +450,44 @@ function animate() {
 		var elapsed = timeNow - lastTime;
 		
 		if( rotationXX_ON ) {
-
-			angleXX += rotationXX_DIR * rotationXX_SPEED * (90 * elapsed) / 1000.0;
+			if(tabuleiro.currentTeam && (Math.abs(angleXX%360) < 120 || Math.abs(angleXX%360) > 125)){
+				angleXX += rotationXX_DIR * rotationXX_SPEED * (90 * elapsed) / 1000.0;
+				
+			}else if(!tabuleiro.currentTeam && (angleXX%360 < 40 || angleXX%360 > 45 )){
+				angleXX += rotationXX_DIR * rotationXX_SPEED * (90 * elapsed) / 1000.0;
+				console.log("x: "+angleXX%360)
+			}else {//if (angleXX%360 > 40 && angleXX%360 < 43){
+				rotationXX_ON = 0;
+				//tabuleiro.jogou = false;
+			}
 	    }
 
 		if( rotationYY_ON ) {
-
-			angleYY += rotationYY_DIR * rotationYY_SPEED * (90 * elapsed) / 1000.0;
+				if( angleYY%360 < 0 || angleYY%360 > 5){
+					angleYY += rotationYY_DIR * rotationYY_SPEED * (90 * elapsed) / 1000.0;
+					console.log("y: "+angleYY%360);
+				}else{
+					rotationYY_ON = 0;
+				}
+				
 	    }
 
 		if( rotationZZ_ON ) {
+			if(tabuleiro.currentTeam && (angleZZ%360 < 180 || angleZZ%360 > 185)){
+				angleZZ += rotationZZ_DIR * rotationZZ_SPEED * (90 * elapsed) / 1000.0;
+			}/* else if (angleZZ%360 > 180 && angleZZ%360 < 183){
+				tabuleiro.jogou = false;
+				rotationZZ_ON = 0;
+			} */
 
-			angleZZ += rotationZZ_DIR * rotationZZ_SPEED * (90 * elapsed) / 1000.0;
+			else if(!tabuleiro.currentTeam && (angleZZ%360 < 0 || angleZZ%360 > 5)){
+				angleZZ += rotationZZ_DIR * rotationZZ_SPEED * (90 * elapsed) / 1000.0;
+
+			}else{ //if (angleZZ%360 > 0 && angleZZ%360 < 3){
+				//tabuleiro.jogou = false;
+				rotationZZ_ON = 0;
+			}
+
 	    }
 	}
 	
@@ -505,11 +530,29 @@ function outputInfos(){
 		document.getElementById('current-team').innerHTML = " &nbsp; Team 1 &nbsp;  ";
 		document.getElementById('current-team').style.backgroundColor = tabuleiro.getTeam1cor();
 		document.getElementById('give-up').textContent = "Give up Team 1";
+		if(tabuleiro.jogou){
+			rotationXX_DIR = -1;
+			rotationZZ_DIR = -1;
+			rotationXX_ON = 1;
+			rotationZZ_ON = 1;
+			rotationYY_ON = 1;
+			tabuleiro.jogou = false;
+		}
+		
+
 	}
 	else{
 		document.getElementById('current-team').innerHTML = " &nbsp; Team 2  &nbsp;";
 		document.getElementById('current-team').style.backgroundColor = tabuleiro.getTeam2cor();
 		document.getElementById('give-up').textContent = "Give up Team 2";
+		if(tabuleiro.jogou){
+			rotationXX_DIR = 1;
+			rotationZZ_DIR = 1;
+			rotationXX_ON = 1;
+			rotationZZ_ON = 1;
+			rotationYY_ON = 1;
+			tabuleiro.jogou = false;
+		}
 	}
 	
 	if(tabuleiro.winner != null){

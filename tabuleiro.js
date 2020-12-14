@@ -5,6 +5,7 @@ class Tabuleiro {
 		//dimensões do quadrado
 		var squareW=1.0; 
 		var squareH=0.4;
+		this.jogou = false;
 
 		//ponto central do quadrado y=0(sempre)
 		var centro = -4*squareW;
@@ -197,6 +198,7 @@ class Tabuleiro {
 		}
 
 		this.currentTeam = !this.currentTeam;
+		this.jogou = true;
 		this.setWinner();
 	}
 
