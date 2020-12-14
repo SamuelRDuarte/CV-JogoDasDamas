@@ -480,7 +480,7 @@ function animate() {
 				rotationZZ_ON = 0;
 			} */
 
-			else if(!tabuleiro.currentTeam && (angleZZ%360 < 0 || angleZZ%360 > 5)){
+			else if(!tabuleiro.currentTeam && (angleZZ%360 < 0 || angleZZ%360 > 2)){
 				angleZZ += rotationZZ_DIR * rotationZZ_SPEED * (90 * elapsed) / 1000.0;
 
 			}else{ //if (angleZZ%360 > 0 && angleZZ%360 < 3){
