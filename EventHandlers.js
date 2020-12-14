@@ -105,6 +105,62 @@ function setEventListeners( canvas ){
         tabuleiro.changeTabuleiroColor(p);
     });
 
+    var team1Color = document.getElementById("team1Color-selection");
+
+    team1Color.addEventListener("click", function(){
+
+        // Getting the selection
+
+        var p = team1Color.selectedIndex;
+        tabuleiro.changeTeam1Color(p);
+        switch(p){
+            case 0:
+                document.getElementById("teamBege-score").style.backgroundColor = "#ff991a";
+                tabuleiro.setTeam1cor("#ff991a");
+                break;
+            case 2:
+                document.getElementById("teamBege-score").style.backgroundColor = "#B5651D";
+                tabuleiro.setTeam1cor("#B5651D");
+                break;
+            case 1:
+                document.getElementById("teamBege-score").style.backgroundColor = "gray";
+                tabuleiro.setTeam1cor("gray");
+                break;
+            case 3:
+                document.getElementById("teamBege-score").style.backgroundColor = "beige";
+                tabuleiro.setTeam1cor("beige");
+                break;
+        }
+    });
+
+    var team2Color = document.getElementById("team2Color-selection");
+
+    team2Color.addEventListener("click", function(){
+
+        // Getting the selection
+
+        var p = team2Color.selectedIndex;
+        tabuleiro.changeTeam2Color(p);
+        switch(p){
+            case 0:
+                document.getElementById("teamRead-score").style.backgroundColor = "red";
+                tabuleiro.setTeam2cor("red");
+                break;
+            case 1:
+                document.getElementById("teamRead-score").style.backgroundColor = "Blue";
+                tabuleiro.setTeam2cor("Blue");
+                break;
+            case 2:
+                document.getElementById("teamRead-score").style.backgroundColor = "Brown";
+                tabuleiro.setTeam2cor("Brown");
+                break;
+            case 3:
+                document.getElementById("teamRead-score").style.backgroundColor = "Green";
+                tabuleiro.setTeam2cor("Green");
+                break;
+        }
+    });
+
     // Button events
 
     document.getElementById("XX-on-off-button").onclick = function(){

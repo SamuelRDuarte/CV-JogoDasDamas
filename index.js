@@ -502,14 +502,14 @@ function outputInfos(){
 	countFrames();
 
 	if(!tabuleiro.currentTeam){
-		document.getElementById('current-team').innerHTML = " &nbsp; Team Beige &nbsp;  ";
-		document.getElementById('current-team').style.backgroundColor = "#F5F5DC";
-		document.getElementById('give-up').textContent = "Give up Team Beige";
+		document.getElementById('current-team').innerHTML = " &nbsp; Team 1 &nbsp;  ";
+		document.getElementById('current-team').style.backgroundColor = tabuleiro.getTeam1cor();
+		document.getElementById('give-up').textContent = "Give up Team 1";
 	}
 	else{
-		document.getElementById('current-team').innerHTML = " &nbsp; Team Red  &nbsp;";
-		document.getElementById('current-team').style.backgroundColor = "crimson";
-		document.getElementById('give-up').textContent = "Give up Team Red";
+		document.getElementById('current-team').innerHTML = " &nbsp; Team 2  &nbsp;";
+		document.getElementById('current-team').style.backgroundColor = tabuleiro.getTeam2cor();
+		document.getElementById('give-up').textContent = "Give up Team 2";
 	}
 	
 	if(tabuleiro.winner != null){
