@@ -23,12 +23,49 @@ function reset(){
 	squaresVertexColorBuffer = null;
 	damasVertexPositionBuffer = null;
 	damasVertexColorBuffer = null;
+
+	resetEventListener();
+	var canvas = document.getElementById("my-canvas");
+	
+	initWebGL( canvas );
+
+	shaderProgram = initShaders( gl );
 	resetView();
-	runWebGL();
+	//setEventListeners( canvas );
 	
 }
 
+function resetView(){
+	tx = 0.0;
+	ty = 0.0;
+	tz = 0.0;
+
+	angleXX = 40;
+	angleYY = 0.0;
+	angleZZ = 0.0;
+
+	sx = 0.13;
+	sy = 0.13;
+	sz = 0.13;
+
+	rotationXX_ON = 0;
+	rotationXX_DIR = 1;
+	rotationXX_SPEED = 1;
+
+	rotationYY_ON = 0;
+	rotationYY_DIR = 1;
+	rotationYY_SPEED = 1;
+
+	rotationZZ_ON = 0;
+	rotationZZ_DIR = 1;
+	rotationZZ_SPEED = 1;
+}
+
 // NEW --- Buffers
+
+var bordaVertexPositionBuffer = null;
+var bordaVertexColorBuffer = null;
+var bordaVertexNormalBuffer = null;
 
 var squaresVertexPositionBuffer = null;
 //var squaresVertexIndexBuffer = null;
@@ -41,10 +78,6 @@ var damasVertexColorBuffer = null;
 // The global transformation parameters
 
 // The translation vector
-
-
-
-
 
 var tx = 0.0;
 var ty = 0.0;
@@ -83,35 +116,43 @@ var primitiveType = null;
 
 var projectionType = 0;
  
-// From learningwebgl.com
+// NEW --- The viewer position
 
-// NEW --- Storing the vertices defining the squares faces
+// It has to be updated according to the projection type
 
-function resetView(){
-	tx = 0.0;
-	ty = 0.0;
-	tz = 0.0;
+var pos_Viewer = [ 0.0, 0.0, 0.0, 1.0 ];
 
-	angleXX = 40;
-	angleYY = 0.0;
-	angleZZ = 0.0;
+// NEW --- Point Light Source Features
 
-	sx = 0.13;
-	sy = 0.13;
-	sz = 0.13;
+// Directional --- Homogeneous coordinate is ZERO
 
-	rotationXX_ON = 0;
-	rotationXX_DIR = 1;
-	rotationXX_SPEED = 1;
+var pos_Light_Source = [ 0.0, 0.0, 1.0, 1.0 ];
 
-	rotationYY_ON = 0;
-	rotationYY_DIR = 1;
-	rotationYY_SPEED = 1;
+// White light
 
-	rotationZZ_ON = 0;
-	rotationZZ_DIR = 1;
-	rotationZZ_SPEED = 1;
-}
+var int_Light_Source = [ 1.0, 1.0, 1.0 ];
+
+// Low ambient illumination
+
+var ambient_Illumination = [ 0.3, 0.3, 0.3 ];
+
+// NEW --- Model Material Features
+
+// Ambient coef.
+
+var kAmbi = [ 0.25, 0.2, 0.07 ];
+
+// Diffuse coef.
+
+var kDiff = [ 0.75, 0.6, 0.23 ];
+
+// Specular coef.
+
+var kSpec = [ 0.63, 0.55, 0.37 ];
+
+// Phong coef.
+
+var nPhong = 51.2;
 
 // Texture coordinates for the quadrangular faces
 
@@ -132,34 +173,6 @@ function resetView(){
 //  Rendering
 //
 
-// Handling the Textures
-
-// From www.learningwebgl.com
-
-/* function handleLoadedTexture(texture) {
-	
-	gl.bindTexture(gl.TEXTURE_2D, texture);
-	gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-	gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, texture.image);
-	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-	gl.bindTexture(gl.TEXTURE_2D, null);
-}
-
-
-var webGLTexture;
-
-function initTexture() {
-	
-	webGLTexture = gl.createTexture();
-	webGLTexture.image = new Image();
-	webGLTexture.image.onload = function () {
-		handleLoadedTexture(webGLTexture)
-	}
-
-	webGLTexture.image.src = "NeHe.gif";
-} */
-
 //----------------------------------------------------------------------------
 
 // Handling the Buffers
@@ -169,7 +182,54 @@ function initTexture() {
 	initBuffersDamas();
 	
 } */
+function initBuffersBorda(){
 
+	// Coordinates
+	var vertices = tabuleiro.getVertices();
+	var colors = tabuleiro.getColors();
+	var normals = tabuleiro.getNormalVertices();
+
+	bordaVertexPositionBuffer = gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER, bordaVertexPositionBuffer);
+	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+	bordaVertexPositionBuffer.itemSize = 3;
+	bordaVertexPositionBuffer.numItems = vertices.length / 3;
+
+	gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, 
+		bordaVertexPositionBuffer.itemSize, 
+		gl.FLOAT, false, 0, 0);
+
+	
+
+	// Colors
+	bordaVertexColorBuffer = gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER, bordaVertexColorBuffer);
+	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
+	bordaVertexColorBuffer.itemSize = 3;
+	bordaVertexColorBuffer.numItems = vertices.length / 3;
+
+	gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, 
+		bordaVertexColorBuffer.itemSize, 
+		gl.FLOAT, false, 0, 0);	
+
+	
+	/* // Vertex Normal Vectors
+		
+	bordaVertexNormalBuffer = gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER, bordaVertexNormalBuffer);
+	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(normals), gl.STATIC_DRAW);
+	bordaVertexNormalBuffer.itemSize = 3;
+	bordaVertexNormalBuffer.numItems = normals.length / 3;	
+	
+
+	// Associating to the vertex shader
+	
+	gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, 
+			bordaVertexNormalBuffer.itemSize, 
+			gl.FLOAT, false, 0, 0);	 */
+	
+	
+}
 
 function initBuffersQuadrado(quadrado){
 
@@ -236,7 +296,73 @@ function initBuffersDama(dama){
 //----------------------------------------------------------------------------
 
 //  Drawing the model
+function drawModelBorda(angleXX, angleYY, angleZZ,
+	sx, sy, sz,
+	tx, ty, tz,
+	mvMatrix,
+	primitiveType ) {
 
+	// Pay attention to transformation order !!
+
+	mvMatrix = mult( mvMatrix, translationMatrix( tx, ty, tz ) );
+	mvMatrix = mult( mvMatrix, rotationZZMatrix( angleZZ ) );
+	mvMatrix = mult( mvMatrix, rotationYYMatrix( angleYY ) );
+	mvMatrix = mult( mvMatrix, rotationXXMatrix( angleXX ) );
+	mvMatrix = mult( mvMatrix, scalingMatrix( sx, sy, sz ) );
+			
+	// Passing the Model View Matrix to apply the current transformation
+	var mvUniform = gl.getUniformLocation(shaderProgram, "uMVMatrix");
+	gl.uniformMatrix4fv(mvUniform, false, new Float32Array(flatten(mvMatrix)));
+
+	/* var ambientProduct = mult( kAmbi, ambient_Illumination );
+    
+    var diffuseProduct = mult( kDiff, int_Light_Source );
+    
+    var specularProduct = mult( kSpec, int_Light_Source ); */
+    
+
+	initBuffersBorda();
+
+	// Partial illumonation terms and shininess Phong coefficient
+	
+	/* gl.uniform3fv( gl.getUniformLocation(shaderProgram, "ambientProduct"), 
+		flatten(ambientProduct) );
+    
+    gl.uniform3fv( gl.getUniformLocation(shaderProgram, "diffuseProduct"),
+        flatten(diffuseProduct) );
+    
+    gl.uniform3fv( gl.getUniformLocation(shaderProgram, "specularProduct"),
+        flatten(specularProduct) );
+
+	gl.uniform1f( gl.getUniformLocation(shaderProgram, "shininess"), 
+		nPhong );
+
+	//Position of the Light Source
+	
+	gl.uniform4fv( gl.getUniformLocation(shaderProgram, "lightPosition"),
+        flatten(pos_Light_Source) ); */
+
+	if( primitiveType == gl.LINE_LOOP ) {
+		
+		// To simulate wireframe drawing!
+		
+		// No faces are defined! There are no hidden lines!
+		
+		// Taking the vertices 3 by 3 and drawing a LINE_LOOP
+		
+		var i;
+		
+		for( i = 0; i < bordaVertexPositionBuffer.numItems / 3; i++ ) {
+		
+			gl.drawArrays( primitiveType, 3 * i, 3 ); 
+		}
+	}	
+	else {
+				
+		gl.drawArrays(primitiveType, 0, bordaVertexPositionBuffer.numItems); 
+		
+	}	
+}
 
 function drawModelQuadrado( quadrado,
 	angleXX, angleYY, angleZZ,
@@ -352,6 +478,9 @@ function drawScene() {
 		tz = 0;
 		
 		// TO BE DONE !
+		pos_Viewer[0] = pos_Viewer[1] = pos_Viewer[3] = 0.0;
+		
+		pos_Viewer[2] = 1.0;
 		
 		// Allow the user to control the size of the view volume
 	}
@@ -367,6 +496,10 @@ function drawScene() {
 		
 		tz = -2.25;
 
+		pos_Viewer[0] = pos_Viewer[1] = pos_Viewer[2] = 0.0;
+		
+		pos_Viewer[3] = 1.0; 
+
 	}
 	
 	// Passing the Projection Matrix to apply the current projection
@@ -374,6 +507,9 @@ function drawScene() {
 	var pUniform = gl.getUniformLocation(shaderProgram, "uPMatrix");
 	
 	gl.uniformMatrix4fv(pUniform, false, new Float32Array(flatten(pMatrix)));
+
+	gl.uniform4fv( gl.getUniformLocation(shaderProgram, "viewerPosition"),
+        flatten(pos_Viewer) );
 	
 	// NEW --- Instantianting the same model more than once !!
 	
@@ -404,6 +540,12 @@ function drawScene() {
 			primitiveType );
 	}
 	
+	drawModelBorda(angleXX, angleYY, angleZZ,
+		sx, sy, sz,
+		tx, ty, tz,
+		mvMatrix,
+		primitiveType );
+
 	outputInfos();
 
 	/* for (var i = 0; i < squaresVertexPositionBuffer.length; i++) { //desenhar quadrado a quadrado
@@ -453,9 +595,9 @@ function animate() {
 			if(tabuleiro.currentTeam && (Math.abs(angleXX%360) < 120 || Math.abs(angleXX%360) > 125)){
 				angleXX += rotationXX_DIR * rotationXX_SPEED * (90 * elapsed) / 1000.0;
 				
-			}else if(!tabuleiro.currentTeam && (angleXX%360 < 40 || angleXX%360 > 45 )){
+			}else if(!tabuleiro.currentTeam && ((angleXX%360 < 40 || angleXX%360 > 45 ) && (Math.abs(angleXX%360) < 320 || Math.abs(angleXX%360) > 325))){
 				angleXX += rotationXX_DIR * rotationXX_SPEED * (90 * elapsed) / 1000.0;
-				console.log("x: "+angleXX%360)
+				//console.log("x: "+Math.abs(angleXX%360))
 			}else {//if (angleXX%360 > 40 && angleXX%360 < 43){
 				rotationXX_ON = 0;
 				//tabuleiro.jogou = false;
@@ -473,15 +615,16 @@ function animate() {
 	    }
 
 		if( rotationZZ_ON ) {
+			//console.log("z: "+Math.abs(angleZZ%360));
 			if(tabuleiro.currentTeam && (angleZZ%360 < 180 || angleZZ%360 > 185)){
-				angleZZ += rotationZZ_DIR * rotationZZ_SPEED * (90 * elapsed) / 1000.0;
+				angleZZ += rotationZZ_DIR * rotationZZ_SPEED * (70 * elapsed) / 1000.0;
 			}/* else if (angleZZ%360 > 180 && angleZZ%360 < 183){
 				tabuleiro.jogou = false;
 				rotationZZ_ON = 0;
 			} */
 
-			else if(!tabuleiro.currentTeam && (angleZZ%360 < 0 || angleZZ%360 > 2)){
-				angleZZ += rotationZZ_DIR * rotationZZ_SPEED * (90 * elapsed) / 1000.0;
+			else if(!tabuleiro.currentTeam && (Math.abs(angleZZ%360) < 0 || Math.abs(angleZZ%360) > 4)){
+				angleZZ += rotationZZ_DIR * rotationZZ_SPEED * (70 * elapsed) / 1000.0;
 
 			}else{ //if (angleZZ%360 > 0 && angleZZ%360 < 3){
 				//tabuleiro.jogou = false;

@@ -6,6 +6,9 @@ class Tabuleiro {
 		var squareW=1.0; 
 		var squareH=0.4;
 		this.jogou = false;
+		this.vertices = [];
+		this.colors = [];
+		this.normalVertices = [];
 
 		//ponto central do quadrado y=0(sempre)
 		var centro = -4*squareW;
@@ -73,6 +76,9 @@ class Tabuleiro {
 			}
 		}
 		console.log(this.damas);
+		this.setVertices();
+		this.setColors();
+		this.setNormalVertices();
 		
 	}
 
@@ -89,6 +95,12 @@ class Tabuleiro {
 			this.winner = false;
 		}
 	}
+
+	getVertices(){ return this.vertices;}
+
+	getColors() { return this.colors;}
+
+	getNormalVertices() { return this.normalVertices;}
 
 	getWinner(){
 		return this.winner;
@@ -338,6 +350,71 @@ class Tabuleiro {
 
 	getTeam2cor() { return this.Team2cor;}
 	setTeam2cor(cor) { this.Team2cor = cor;}
+
+	setVertices(x=-0.5,y=-0.3,z=-0.5,comp=10,alt=0.5){
+		this.vertices = [	//FRONT
+			x-comp/2,	y,	    z+comp/2,   //P1
+			x+comp/2,	y,		z+comp/2,   //P4
+			x+comp/2,	y-alt,	z+comp/2,   //P6
+
+			x+comp/2,	y-alt,	z+comp/2,   //P6
+			x-comp/2,	y-alt,	z+comp/2,   //P7
+			x-comp/2,	y,	    z+comp/2,   //P1
+
+			//BACK
+			x-comp/2,	y,	    z-comp/2,   //P2
+			x+comp/2,	y,		z-comp/2,   //P3
+			x+comp/2,	y-alt,	z-comp/2,   //P5
+			
+			x+comp/2,	y-alt,	z-comp/2,   //P5
+			x-comp/2,	y-alt,	z-comp/2,
+			x-comp/2,	y,	    z-comp/2,   //P2
+
+			//TOP
+			x-comp/2,	y,	    z+comp/2,   //P1
+			x-comp/2,	y,	    z-comp/2,   //P2
+			x+comp/2,	y,		z-comp/2,   //P3
+
+			x+comp/2,	y,		z-comp/2,   //P3
+			x+comp/2,	y,		z+comp/2,   //P4
+			x-comp/2,	y,	    z+comp/2,   //P1
+
+			//BOTTOM
+			x-comp/2,	y-alt,	z+comp/2,   //P7
+			x-comp/2,	y-alt,	z-comp/2,  //P8
+			x+comp/2,	y-alt,	z-comp/2,   //P5
+
+			x+comp/2,	y-alt,	z-comp/2,   //P5
+			x+comp/2,	y-alt,	z+comp/2,   //P6
+			x-comp/2,	y-alt,	z+comp/2,   //P7
+
+			//RIGHT
+			x+comp/2,	y,		z+comp/2,   //P4
+			x+comp/2,	y,		z-comp/2,   //P3
+			x+comp/2,	y-alt,	z-comp/2,   //P5
+
+			x+comp/2,	y-alt,	z-comp/2,   //P5
+			x+comp/2,	y-alt,	z+comp/2,   //P6
+			x+comp/2,	y,		z+comp/2,   //P4
+
+			//LEFT
+			x-comp/2,	y,	    z+comp/2,   //P1
+			x-comp/2,	y,	    z-comp/2,   //P2
+			x-comp/2,	y-alt,	z-comp/2,  //P8
+
+			x-comp/2,	y-alt,	z-comp/2,  //P8
+			x-comp/2,	y-alt,	z+comp/2,   //P7
+			x-comp/2,	y,	    z+comp/2];   //P1 
+	}
+
+	setNormalVertices(){
+		computeVertexNormals(this.vertices,this.normalVertices);
+	}
+	setColors(){
+		for(var i = 0; i< this.vertices.length; i++){
+			this.colors[i] = 0.1;
+		}
+	}
 }
 
 class Quadrado {

@@ -80,6 +80,7 @@ function setEventListeners( canvas ){
       
     document.addEventListener('keydown', function(event) {
         if (event.code == 'KeyS' ) {
+            console.log("ABAIXO")
             if(!tabuleiro.currentTeam){
                 var q = tabuleiro.getoverQuadrado();
                 var y = (q[0]+1) % 8;
@@ -97,6 +98,7 @@ function setEventListeners( canvas ){
 
     document.addEventListener('keydown', function(event) {
         if (event.keyCode == 13 ) {
+            console.log("AQUI");
             var q = tabuleiro.getoverQuadrado();
             tabuleiro.setselectQuadrado(q[0],q[1]);
             console.log(tabuleiro.getselectQuadrado());
@@ -314,6 +316,7 @@ function setEventListeners( canvas ){
         resetView();
     };
 
+
     document.getElementById("reset-game").onclick = function(){
         reset();
     };
@@ -434,4 +437,10 @@ function handleKeys() {
     //     tabuleiro.setselectQuadrado(q[0],q[1]);
     //     console.log(tabuleiro.getselectQuadrado());
     // }
+}
+function resetEventListener(canvas){
+
+   
+
+    document.removeEventListener('keydown', function(event){});
 }
