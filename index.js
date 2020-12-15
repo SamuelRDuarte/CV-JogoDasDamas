@@ -1,3 +1,34 @@
+// NEW --- Point Light Source Features
+
+// Directional --- Homogeneous coordinate is ZERO
+
+var pos_Light_Source = [ -10.0, -10.0, -10.0, 1.0 ];
+
+// White light
+
+var int_Light_Source = [ 1.0, 1.0, 1.0 ];
+
+// Low ambient illumination
+
+var ambient_Illumination = [ 0.2, 0.0, 0.2 ];
+
+// NEW --- Model Material Features
+
+// Ambient coef.
+
+var kAmbi = [ 0.25, 0.22, 0.06 ];
+
+// Difuse coef.
+
+var kDiff = [ 0.35, 0.31, 0.09 ];
+
+// Specular coef.
+
+var kSpec = [ 0.80, 0.73, 0.21 ];
+
+// Phong coef.
+
+var nPhong = 83.2;
 
 //----------------------------------------------------------------------------
 //
@@ -12,6 +43,9 @@ var tabuleiro = new Tabuleiro();
 var squares = tabuleiro.getSquares();
 var damas = tabuleiro.getDamas();
 //console.log(damas);
+var Tvertices = tabuleiro.getVertices();
+var Tcolors = tabuleiro.getColors();
+var Tnormals = tabuleiro.getNormalVertices();
 
 function reset(){
 	tabuleiro = new Tabuleiro();
@@ -120,7 +154,7 @@ var projectionType = 0;
 
 // It has to be updated according to the projection type
 
-var pos_Viewer = [ 0.0, 0.0, 0.0, 1.0 ];    
+//var pos_Viewer = [ 0.0, 0.0, 0.0, 1.0 ];    
          
          
 //----------------------------------------------------------------------------
@@ -151,9 +185,9 @@ function initBuffersBorda(){
 
 	bordaVertexPositionBuffer = gl.createBuffer();
 	gl.bindBuffer(gl.ARRAY_BUFFER, bordaVertexPositionBuffer);
-	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(Tvertices), gl.STATIC_DRAW);
 	bordaVertexPositionBuffer.itemSize = 3;
-	bordaVertexPositionBuffer.numItems = vertices.length / 3;
+	bordaVertexPositionBuffer.numItems = Tvertices.length / 3;
 
 	gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, 
 		bordaVertexPositionBuffer.itemSize, 
@@ -164,9 +198,9 @@ function initBuffersBorda(){
 	// Colors
 	bordaVertexColorBuffer = gl.createBuffer();
 	gl.bindBuffer(gl.ARRAY_BUFFER, bordaVertexColorBuffer);
-	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
+	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(Tcolors), gl.STATIC_DRAW);
 	bordaVertexColorBuffer.itemSize = 3;
-	bordaVertexColorBuffer.numItems = vertices.length / 3;
+	bordaVertexColorBuffer.numItems = Tvertices.length / 3;
 
 	gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, 
 		bordaVertexColorBuffer.itemSize, 
@@ -262,45 +296,162 @@ function drawModelBorda(angleXX, angleYY, angleZZ,
 	mvMatrix,
 	primitiveType ) {
 
-	// Pay attention to transformation order !!
 
+	// The global model transformation is an input
+	
+	// Concatenate with the particular model transformations
+	
+    // Pay attention to transformation order !!
+    
 	mvMatrix = mult( mvMatrix, translationMatrix( tx, ty, tz ) );
+						 
 	mvMatrix = mult( mvMatrix, rotationZZMatrix( angleZZ ) );
+	
 	mvMatrix = mult( mvMatrix, rotationYYMatrix( angleYY ) );
+	
 	mvMatrix = mult( mvMatrix, rotationXXMatrix( angleXX ) );
+	
 	mvMatrix = mult( mvMatrix, scalingMatrix( sx, sy, sz ) );
-			
+						 
 	// Passing the Model View Matrix to apply the current transformation
+	
 	var mvUniform = gl.getUniformLocation(shaderProgram, "uMVMatrix");
+	
 	gl.uniformMatrix4fv(mvUniform, false, new Float32Array(flatten(mvMatrix)));
+	
+	// NEW --- Phong Illumination Model
+	
+	// TO BE COMPLETED STEP BY STEP !!
+	
+	// TEST THE AMBIENT ILLUMINATION FIRST !!
+	
+	// Clearing the colors array
+	Tcolors.splice(0, Tcolors.length);
+	  	
+	// Compute the 3 components: AMBIENT, DIFFUSE and SPECULAR
 
-	/* var ambientProduct = mult( kAmbi, ambient_Illumination );
+	var ambientTerm = [ 0.0, 0.0, 0.0 ];
+	
+	var diffuseTerm = [ 0.0, 0.0, 0.0 ];
+	
+	var specularTerm = [ 0.0, 0.0, 0.0 ];
+	
+    // INITIALIZE EACH COMPONENT, with the constant terms
+    for( var i = 0; i < 3; i++ )
+    {
+		ambientTerm[i] = kAmbi[i] * ambient_Illumination[i];
+		diffuseTerm[i] = kDiff[i] * int_Light_Source[i];
+		specularTerm[i] = kSpec[i] * int_Light_Source[i];
+    }
     
-    var diffuseProduct = mult( kDiff, int_Light_Source );
+    // SMOOTH-SHADING 
+
+    // Compute the illumination for every vertex
+
+    // Iterate through the vertices
     
-    var specularProduct = mult( kSpec, int_Light_Source ); */
-    
+    for( var vertIndex = 0; vertIndex < Tvertices.length; vertIndex += 3 )
+    {	
+		// For every vertex
+		
+		// GET COORDINATES AND NORMAL VECTOR
+		// point where illumination point is being calculated
+
+		var auxP = Tvertices.slice(vertIndex, vertIndex + 3 );	
+		
+		var auxN = Tnormals.slice(vertIndex, vertIndex + 3);
+
+        // CONVERT TO HOMOGENEOUS COORDINATES
+		
+		auxP.push(1.0);
+
+		auxN.push(0.0);
+		 
+        // APPLY CURRENT TRANSFORMATION (ROTATION, ETC.) -> IMPORTANT
+
+        var pointP = multiplyPointByMatrix(mvMatrix, auxP);  						
+
+        var vectorN = multiplyVectorByMatrix(mvMatrix, auxN); 
+        
+        // NORMALIZE vectorN
+
+		normalize(vectorN);
+
+        // DIFFUSE ILLUMINATION
+	
+        // Check if light source is directional or not
+        
+        var vectorL = vec3();
+
+		if ( pos_Light_Source[3] == 0.0) {
+			// Directional light source
+			// Focus at infinite distance -> direction is already given 
+			vectorL = pos_Light_Source.slice(0, 3);
+		}
+		else {
+			for ( var i = 0 ; i < 3; i++ ) {
+				vectorL[i] = pos_Light_Source[i] - pointP[i];
+			}
+		}
+		
+		normalize(vectorL);
+
+        // Compute the dot product
+
+        var cosNL = dotProduct(vectorN, vectorL);
+
+        if (cosNL < 0.0) {
+			cosNL = 0.0;		// No direct illumination
+		}
+
+        // SEPCULAR ILLUMINATION 
+
+		var vectorV = vec3();
+
+		// Check the projection type
+		if ( projectionType == 0 ) {
+			// orthogonal
+			vectorV[2] = 1.0;
+		}
+		else {
+			// perspective
+			// viewer at (0, 0, 0)
+			vectorV = symmetric(pointP);	// quero vector do ponto para o observador
+		}
+		
+		normalize(vectorV);
+		 
+
+		var vectorH = add(vectorL, vectorV);
+		
+		normalize(vectorH);
+        
+		var cosNH = dotProduct(vectorN, vectorH);
+		
+		if (cosNH < 0.0 || cosNL <= 0.0 ) {
+			cosNH = 0.0;
+		}
+
+        // Compute the color values and store in the colors array
+        
+		// Copy ambient lighting
+		// Copy difuse lighting
+		for (var i = 0; i < 3; i++) {
+			Tcolors[vertIndex + i] = ambientTerm[i];
+			
+			Tcolors[vertIndex + i] += (diffuseTerm[i] * cosNL);
+
+			Tcolors[vertIndex + i] += (specularTerm[i] * Math.pow(cosNH, nPhong));
+		}
+		
+
+		// Avoid exceeding 1.0
+    }
+	// Associating the data to the vertex shader
+	
+	// This can be done in a better way !!
 
 	initBuffersBorda();
-
-	// Partial illumonation terms and shininess Phong coefficient
-	
-	/* gl.uniform3fv( gl.getUniformLocation(shaderProgram, "ambientProduct"), 
-		flatten(ambientProduct) );
-    
-    gl.uniform3fv( gl.getUniformLocation(shaderProgram, "diffuseProduct"),
-        flatten(diffuseProduct) );
-    
-    gl.uniform3fv( gl.getUniformLocation(shaderProgram, "specularProduct"),
-        flatten(specularProduct) );
-
-	gl.uniform1f( gl.getUniformLocation(shaderProgram, "shininess"), 
-		nPhong );
-
-	//Position of the Light Source
-	
-	gl.uniform4fv( gl.getUniformLocation(shaderProgram, "lightPosition"),
-        flatten(pos_Light_Source) ); */
 
 	if( primitiveType == gl.LINE_LOOP ) {
 		
@@ -438,9 +589,9 @@ function drawScene() {
 		tz = 0;
 		
 		// TO BE DONE !
-		pos_Viewer[0] = pos_Viewer[1] = pos_Viewer[3] = 0.0;
+		/* pos_Viewer[0] = pos_Viewer[1] = pos_Viewer[3] = 0.0;
 		
-		pos_Viewer[2] = 1.0;
+		pos_Viewer[2] = 1.0; */
 		
 		// Allow the user to control the size of the view volume
 	}
@@ -456,9 +607,9 @@ function drawScene() {
 		
 		tz = -2.25;
 
-		pos_Viewer[0] = pos_Viewer[1] = pos_Viewer[2] = 0.0;
+		/* pos_Viewer[0] = pos_Viewer[1] = pos_Viewer[2] = 0.0;
 		
-		pos_Viewer[3] = 1.0; 
+		pos_Viewer[3] = 1.0;  */
 
 	}
 	
@@ -468,8 +619,8 @@ function drawScene() {
 	
 	gl.uniformMatrix4fv(pUniform, false, new Float32Array(flatten(pMatrix)));
 
-	gl.uniform4fv( gl.getUniformLocation(shaderProgram, "viewerPosition"),
-        flatten(pos_Viewer) );
+	/* gl.uniform4fv( gl.getUniformLocation(shaderProgram, "viewerPosition"),
+        flatten(pos_Viewer) ); */
 	
 	// NEW --- Instantianting the same model more than once !!
 	
