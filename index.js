@@ -120,47 +120,7 @@ var projectionType = 0;
 
 // It has to be updated according to the projection type
 
-var pos_Viewer = [ 0.0, 0.0, 0.0, 1.0 ];
-
-// NEW --- Point Light Source Features
-
-// Directional --- Homogeneous coordinate is ZERO
-
-var pos_Light_Source = [ 0.0, 0.0, 1.0, 1.0 ];
-
-// White light
-
-var int_Light_Source = [ 1.0, 1.0, 1.0 ];
-
-// Low ambient illumination
-
-var ambient_Illumination = [ 0.3, 0.3, 0.3 ];
-
-// NEW --- Model Material Features
-
-// Ambient coef.
-
-var kAmbi = [ 0.25, 0.2, 0.07 ];
-
-// Diffuse coef.
-
-var kDiff = [ 0.75, 0.6, 0.23 ];
-
-// Specular coef.
-
-var kSpec = [ 0.63, 0.55, 0.37 ];
-
-// Phong coef.
-
-var nPhong = 51.2;
-
-// Texture coordinates for the quadrangular faces
-
-// Notice how they are assigne to the corresponding vertices
-
-
-// Vertex indices defining the triangles
-    
+var pos_Viewer = [ 0.0, 0.0, 0.0, 1.0 ];    
          
          
 //----------------------------------------------------------------------------

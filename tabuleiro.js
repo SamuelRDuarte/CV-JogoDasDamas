@@ -411,8 +411,10 @@ class Tabuleiro {
 		computeVertexNormals(this.vertices,this.normalVertices);
 	}
 	setColors(){
-		for(var i = 0; i< this.vertices.length; i++){
-			this.colors[i] = 0.1;
+		for(var i = 0; i< this.vertices.length; i+=3){
+			this.colors[i] = (149/255);
+			this.colors[i+1] = (122/255);
+			this.colors[i+2] = (86/255);
 		}
 	}
 }
