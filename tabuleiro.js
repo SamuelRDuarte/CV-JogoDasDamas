@@ -195,6 +195,9 @@ class Tabuleiro {
 				}
 				console.log("DAMA_Red: "+ damaCapturada);
 				this.pecasPerdidasRead.push(damaCapturada);
+				var y = (this.pecasPerdidasRead.length*0.5) - 0.8;
+				damaCapturada.setCoordenadas([4,y,4],0.5,0.5);
+				console.log(damaCapturada);
 			}else{
 				if(slotinicial[1]-slotfinal[1] == 2){
 					damaCapturada = this.slotsOcupados[slotinicial[0]+1][slotinicial[1]-1];
@@ -205,8 +208,11 @@ class Tabuleiro {
 					this.slotsOcupados[slotinicial[0]+1][slotinicial[1]+1] = null; //tirar peça do tabuleiro
 				}
 				this.pecasPerdidasBege.push(damaCapturada);
+				var y = (this.pecasPerdidasBege.length*0.5) - 0.8;
+				damaCapturada.setCoordenadas([-5,y,-5],0.5,0.5);
+				console.log(damaCapturada);
 			}
-			damaCapturada.apagarDama(); 
+			//damaCapturada.apagarDama(); 
 		}
 
 		this.currentTeam = !this.currentTeam;

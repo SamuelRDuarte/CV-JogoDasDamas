@@ -169,13 +169,13 @@ function setEventListeners( canvas ){
                 document.getElementById("teamBege-score").style.backgroundColor = "#ff991a";
                 tabuleiro.setTeam1cor("#ff991a");
                 break;
-            case 2:
-                document.getElementById("teamBege-score").style.backgroundColor = "#B5651D";
-                tabuleiro.setTeam1cor("#B5651D");
-                break;
             case 1:
                 document.getElementById("teamBege-score").style.backgroundColor = "gray";
                 tabuleiro.setTeam1cor("gray");
+                break;
+            case 2:
+                document.getElementById("teamBege-score").style.backgroundColor = "#B5651D";
+                tabuleiro.setTeam1cor("#B5651D");
                 break;
             case 3:
                 document.getElementById("teamBege-score").style.backgroundColor = "beige";
@@ -202,8 +202,8 @@ function setEventListeners( canvas ){
                 tabuleiro.setTeam2cor("Blue");
                 break;
             case 2:
-                document.getElementById("teamRead-score").style.backgroundColor = "Brown";
-                tabuleiro.setTeam2cor("Brown");
+                document.getElementById("teamRead-score").style.backgroundColor = "#654321";
+                tabuleiro.setTeam2cor("#654321");
                 break;
             case 3:
                 document.getElementById("teamRead-score").style.backgroundColor = "Green";

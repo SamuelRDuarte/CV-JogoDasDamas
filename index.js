@@ -2,7 +2,7 @@
 
 // Directional --- Homogeneous coordinate is ZERO
 
-var pos_Light_Source = [ -10.0, -10.0, -10.0, 1.0 ];
+var pos_Light_Source = [ -1.0, -1.0, -1.0, 1.0 ];
 
 // White light
 
@@ -183,10 +183,6 @@ var projectionType = 0;
 } */
 function initBuffersBorda(){
 
-	// Coordinates
-	var vertices = tabuleiro.getVertices();
-	var colors = tabuleiro.getColors();
-	var normals = tabuleiro.getNormalVertices();
 
 	bordaVertexPositionBuffer = gl.createBuffer();
 	gl.bindBuffer(gl.ARRAY_BUFFER, bordaVertexPositionBuffer);
@@ -210,22 +206,6 @@ function initBuffersBorda(){
 	gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, 
 		bordaVertexColorBuffer.itemSize, 
 		gl.FLOAT, false, 0, 0);	
-
-	
-	/* // Vertex Normal Vectors
-		
-	bordaVertexNormalBuffer = gl.createBuffer();
-	gl.bindBuffer(gl.ARRAY_BUFFER, bordaVertexNormalBuffer);
-	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(normals), gl.STATIC_DRAW);
-	bordaVertexNormalBuffer.itemSize = 3;
-	bordaVertexNormalBuffer.numItems = normals.length / 3;	
-	
-
-	// Associating to the vertex shader
-	
-	gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, 
-			bordaVertexNormalBuffer.itemSize, 
-			gl.FLOAT, false, 0, 0);	 */
 	
 	
 }
