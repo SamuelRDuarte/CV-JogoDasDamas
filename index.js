@@ -67,6 +67,11 @@ function reset(){
 	resetView();
 	//setEventListeners( canvas );
 	
+	initWebGL( canvas );
+
+	shaderProgram = initShaders( gl );
+	resetEventListener(canvas);
+	//setEventListeners( canvas );
 }
 
 function resetView(){
@@ -759,7 +764,7 @@ function tick() {
 	
 	// NEW --- Processing keyboard events 
 	
-	handleKeys();
+	//handleKeys();
 	
 	drawScene();
 	
@@ -811,10 +816,10 @@ function outputInfos(){
 	
 	if(tabuleiro.winner != null){
 		if(tabuleiro.winner){
-			alert("Team Red is the winner!");
+			alert("Team 2 is the winner!");
 		}
 		if(!tabuleiro.winner){
-			alert("Team Bege is the winner!");
+			alert("Team 1 is the winner!");
 		}
 		reset();
 	}
