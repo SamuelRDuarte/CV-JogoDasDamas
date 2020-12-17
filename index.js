@@ -2,7 +2,7 @@
 
 // Directional --- Homogeneous coordinate is ZERO
 
-var pos_Light_Source = [ -1.0, -1.0, -1.0, 1.0 ];
+var pos_Light_Source = [ 0.0, -1.0, -1.0, 0.0 ];
 
 // White light
 
@@ -42,7 +42,6 @@ var shaderProgram = null;
 var tabuleiro = new Tabuleiro();
 var squares = tabuleiro.getSquares();
 var damas = tabuleiro.getDamas();
-//console.log(damas);
 var Tvertices = tabuleiro.getVertices();
 var Tcolors = tabuleiro.getColors();
 var Tnormals = tabuleiro.getNormalVertices();
@@ -65,13 +64,11 @@ function reset(){
 
 	shaderProgram = initShaders( gl );
 	resetView();
-	//setEventListeners( canvas );
 	
 	initWebGL( canvas );
 
 	shaderProgram = initShaders( gl );
 	resetEventListener(canvas);
-	//setEventListeners( canvas );
 }
 
 function resetView(){
@@ -107,11 +104,9 @@ var bordaVertexColorBuffer = null;
 var bordaVertexNormalBuffer = null;
 
 var squaresVertexPositionBuffer = null;
-//var squaresVertexIndexBuffer = null;
 var squaresVertexColorBuffer = null;
 
 var damasVertexPositionBuffer = null;
-//var damasVertexIndexBuffer = [];
 var damasVertexColorBuffer = null;
 
 // The global transformation parameters
@@ -176,11 +171,6 @@ var projectionType = 0;
 
 // Handling the Buffers
 
-/* function initBuffers() {
-	//initBuffersQuadrados();
-	initBuffersDamas();
-	
-} */
 function initBuffersBorda(){
 
 
@@ -245,7 +235,6 @@ function initBuffersDama(dama){
 	// Coordinates
 	var vertices = dama.getVertices();
 	var colors = dama.getColors();
-	//var vertexIndices = quadrado.getVertexIndices();
 
 	damasVertexPositionBuffer = gl.createBuffer();
 	gl.bindBuffer(gl.ARRAY_BUFFER, damasVertexPositionBuffer);
@@ -573,10 +562,6 @@ function drawScene() {
 		
 		tz = 0;
 		
-		// TO BE DONE !
-		/* pos_Viewer[0] = pos_Viewer[1] = pos_Viewer[3] = 0.0;
-		
-		pos_Viewer[2] = 1.0; */
 		
 		// Allow the user to control the size of the view volume
 	}
@@ -590,11 +575,7 @@ function drawScene() {
 		
 		pMatrix = perspective( 45, 1, 0.05, 10 );
 		
-		tz = -2.25;
-
-		/* pos_Viewer[0] = pos_Viewer[1] = pos_Viewer[2] = 0.0;
-		
-		pos_Viewer[3] = 1.0;  */
+		tz = -2.25;	
 
 	}
 	
@@ -604,8 +585,7 @@ function drawScene() {
 	
 	gl.uniformMatrix4fv(pUniform, false, new Float32Array(flatten(pMatrix)));
 
-	/* gl.uniform4fv( gl.getUniformLocation(shaderProgram, "viewerPosition"),
-        flatten(pos_Viewer) ); */
+	
 	
 	// NEW --- Instantianting the same model more than once !!
 	
@@ -643,30 +623,6 @@ function drawScene() {
 		primitiveType );
 
 	outputInfos();
-
-	/* for (var i = 0; i < squaresVertexPositionBuffer.length; i++) { //desenhar quadrado a quadrado
-		drawModelTeste(  squaresVertexPositionBuffer[i],
-					squaresVertexColorBuffer[i],
-					squaresVertexIndexBuffer[i],
-					angleXX, angleYY, angleZZ,
-					sx, sy, sz,
-					tx, ty, tz,
-					mvMatrix,
-					primitiveType );
-	} */
-
-	/* for (var i = 0; i < damasVertexPositionBuffer.length; i++) { //desenhar dama a dama
-		drawModel(  damasVertexPositionBuffer[i],
-					damasVertexColorBuffer[i],
-					damasVertexIndexBuffer[i],
-					angleXX, angleYY, angleZZ,
-					sx, sy, sz,
-					tx, ty, tz,
-					mvMatrix,
-					primitiveType );
-	} */
-
-	
 	           
 }
 
@@ -693,10 +649,8 @@ function animate() {
 				
 			}else if(!tabuleiro.currentTeam && ((angleXX%360 < 40 || angleXX%360 > 45 ) && (Math.abs(angleXX%360) < 320 || Math.abs(angleXX%360) > 325))){
 				angleXX += rotationXX_DIR * rotationXX_SPEED * (90 * elapsed) / 1000.0;
-				//console.log("x: "+Math.abs(angleXX%360))
-			}else {//if (angleXX%360 > 40 && angleXX%360 < 43){
+			}else {
 				rotationXX_ON = 0;
-				//tabuleiro.jogou = false;
 			}
 	    }
 
@@ -711,19 +665,15 @@ function animate() {
 	    }
 
 		if( rotationZZ_ON ) {
-			//console.log("z: "+Math.abs(angleZZ%360));
+			
 			if(tabuleiro.currentTeam && (angleZZ%360 < 180 || angleZZ%360 > 185)){
 				angleZZ += rotationZZ_DIR * rotationZZ_SPEED * (70 * elapsed) / 1000.0;
-			}/* else if (angleZZ%360 > 180 && angleZZ%360 < 183){
-				tabuleiro.jogou = false;
-				rotationZZ_ON = 0;
-			} */
+			}
 
-			else if(!tabuleiro.currentTeam && (Math.abs(angleZZ%360) < 0 || Math.abs(angleZZ%360) > 4)){
+			else if(!tabuleiro.currentTeam && (Math.abs(angleZZ%360) < 0 || Math.abs(angleZZ%360) > 2)){
 				angleZZ += rotationZZ_DIR * rotationZZ_SPEED * (70 * elapsed) / 1000.0;
 
-			}else{ //if (angleZZ%360 > 0 && angleZZ%360 < 3){
-				//tabuleiro.jogou = false;
+			}else{ 
 				rotationZZ_ON = 0;
 			}
 
@@ -811,36 +761,6 @@ function outputInfos(){
 	document.getElementById("teamRead-score").innerHTML = scores[1];
 	
 }
-
-
-// score = 0;
-
-// function go(x){
-// $({score: 0}).animate({score: x},{
-// 	duration: 1000,
-// 	easing:"linear",
-// 	step: function(now, fx){
-// 	$("#teamBege-score").html(score + Math.floor(now));
-// 	},
-// 	queue:false,
-// 	complete: function(now, fx){
-// 	score += x;
-// 	}
-// });
-// $("#tag").fadeIn({
-// 	duration:700,
-// 	easing:"linear",
-// 	step:function(now, fx){
-// 	$(this).css("top", -55 * now  +"px");
-// 	}
-// }).fadeOut({
-// 	duration:300,
-// 	step:function(now, fx){
-// 	$(this).css("top",-55 * ( 2 - now) + "px");
-// 	}
-// });
-
-// }
 
 
 //----------------------------------------------------------------------------

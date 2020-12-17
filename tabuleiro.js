@@ -110,16 +110,6 @@ class Tabuleiro {
 		return [this.pecasPerdidasRead.length, this.pecasPerdidasBege.length];
 	}
 
-	getSquaresVertices() {
-		var vertices = new Array();
-		for (var i = 0; i < this.squares.length; i++) {
-			for (var j = 0; j < this.squares[i].length; j++) {
-				retVal.push(squares[i][j].getVertices());
-			}
-		}
-		return vertices;
-	}
-
 	getSquares() {
 		return this.squares;
 	}
@@ -144,8 +134,7 @@ class Tabuleiro {
 		}
 		q.changeColor(false);
 		console.log(q);
-		//initBuffersQuadrado(q);
-		//initBuffersQuadrado(old_q);
+		
 	}
 
 	setselectQuadrado(x,y){
@@ -155,8 +144,6 @@ class Tabuleiro {
 			if(this.slotsOcupados[x][y] != null && this.slotsOcupados[x][y].getEquipa() == this.currentTeam){
 				this.selectedQuadrado = this.overQuadrado;
 				var q = this.squares[this.selectedQuadrado[0]][this.selectedQuadrado[1]];
-				var dama = this.slotsOcupados[this.selectedQuadrado[0]][this.selectedQuadrado[1]];
-				//dama.apagarDama();
 				q.changeColorSelected(false);	
 				this.getPossiblePlays(this.selectedQuadrado[0],this.selectedQuadrado[1]);	
 				
@@ -212,7 +199,6 @@ class Tabuleiro {
 				damaCapturada.setCoordenadas([-5,y,-5],0.5,0.5);
 				console.log(damaCapturada);
 			}
-			//damaCapturada.apagarDama(); 
 		}
 
 		this.currentTeam = !this.currentTeam;
@@ -427,32 +413,14 @@ class Tabuleiro {
 
 class Quadrado {
 
-	// colorBool is boolean for there are two and only two colors
-	// x, y and z are idCoord (center of top face)
-	// s is side
-	// h is height
 	constructor(x ,y=0.0,z ,comp=1.0,alt=0.5, color,corid=0) {
 		this.colorBlack = color;
 		this.id = [x,y,z];
 		this.corID = corid;
 		this.vertices = [];
-		/* this.vertices = [	x-comp/2,	y,	    z+comp/2,   //P1
-							x-comp/2,	y,	    z-comp/2,   //P2
-							x+comp/2,	y,		z-comp/2,   //P3
-							x+comp/2,	y,		z+comp/2,   //P4
-							x+comp/2,	y-alt,	z-comp/2,   //P5
-							x+comp/2,	y-alt,	z+comp/2,   //P6
-							x-comp/2,	y-alt,	z+comp/2,   //P7
-                            x-comp/2,	y-alt,	z-comp/2];  //P8 */
+		
 		
 		this,this.setVertices(x,y,z,comp,alt);
-		
-		/* this.vertexIndices = [	0,3,5,	5,6,0,	// Front (P1,P4,P6,P7)	
-								1,2,4,	4,7,1,	// Back	 (P2,P3,P5,P8)   	
-								0,1,2,	2,3,0,	// Top	  (P1,P2,P3,P4)  	
-								6,7,4,	4,5,6,	// Bottom	(P7,P8,P5,P6)
-								3,2,4,	4,5,3,	// Right    (P4,P3,P5,P6)	
-								0,1,7,	7,6,0];	// Left		 (P1,P2,P8,P7) */
 
 		this.colors =  []
 		this.setCor(corid)
@@ -495,11 +463,6 @@ class Quadrado {
 	}
 
 	setColors(cor){
-		/* var cor = 0.75;			//trocar a ordem da cor
-		if (this.colorBlack) {
-			cor = 0.25;
-		} */
-
 		var length = this.vertices.length;
 		for (var i = 0; i < length; i+=3) {
 			this.colors[i] = cor[0];
@@ -530,13 +493,6 @@ class Quadrado {
 
 	changeColor(reset){
 		if(reset){
-			/* var cor = 0.75;
-			if (this.colorBlack) {
-				cor = 0.25;
-			}
-			for (var i = 0; i < this.colors.length; i++) {
-				this.colors[i] = cor;
-			} */
 			this.setCor(this.corID);
 		}else{
 			for(var i = 0; i < this.colors.length; i+=3){
@@ -550,15 +506,6 @@ class Quadrado {
 
 	changeColorSelected(reset){
 		if(reset){
-			/* var cor = 0.75;			//trocar a ordem da cor
-			if (this.colorBlack) {
-				cor = 0.25;
-			}
-
-			var length = this.vertices.length;
-			for (var i = 0; i < length; i++) {
-				this.colors[i] = cor;
-			} */
 			this.setCor(this.corID);
 		}else{
 			for(var i = 0; i < this.colors.length; i+=3){
@@ -634,41 +581,11 @@ class Damas{
 		this.id = [x,y,z];
 		this.vertices = [];
 
-		/* this.vertices = [	x-comp/2,	y+alt,	    z+comp/2,   //P1
-							x-comp/2,	y+alt,	    z-comp/2,   //P2
-							x+comp/2,	y+alt,		z-comp/2,   //P3
-							x+comp/2,	y+alt,		z+comp/2,   //P4
-							x+comp/2,	y,	z-comp/2,   //P5
-							x+comp/2,	y,	z+comp/2,   //P6
-							x-comp/2,	y,	z+comp/2,   //P7
-							x-comp/2,	y,	z-comp/2];  //P8 */
 		this.setVertices(x,y,z,comp,alt);
 
-		/* this.vertexIndices = [	0,3,5,	5,6,0,	// Front (P1,P4,P6,P7)	
-				1,2,4,	4,7,1,	// Back	 (P2,P3,P5,P8)   	
-				0,1,2,	2,3,0,	// Top	  (P1,P2,P3,P4)  	
-				6,7,4,	4,5,6,	// Bottom	(P7,P8,P5,P6)
-				3,2,4,	4,5,3,	// Right    (P4,P3,P5,P6)	
-				0,1,7,	7,6,0];	// Left		 (P1,P2,P8,P7) */
 		
 		this.colors =  [];
 		this.setCor(0);
-		 
-		/* if (this.equipa) { //team 1(red)
-			var length = this.vertices.length;
-			for (var i = 0; i < length; i++) {
-				this.colors.push(0.9);
-				this.colors.push(0.0);
-				this.colors.push(0.0);
-			}
-		}else{	//team2 (bege?)
-			var length = this.vertices.length;
-			for (var i = 0; i < length; i++) {
-				this.colors.push(1.0);
-				this.colors.push(0.6);
-				this.colors.push(0.1);
-			}
-		} */
 		
 	}
 
@@ -734,11 +651,6 @@ class Damas{
 	}
 
 	setColors(cor){
-		/* var cor = 0.75;			//trocar a ordem da cor
-		if (this.colorBlack) {
-			cor = 0.25;
-		} */
-
 		var length = this.vertices.length;
 		for (var i = 0; i < length; i+=3) {
 			this.colors[i] = cor[0];
@@ -801,7 +713,5 @@ class Damas{
 			x-comp/2,	y,	z-comp/2,  //P8
 			x-comp/2,	y,	z+comp/2,   //P7
 			x-comp/2,	y+alt,	    z+comp/2];   //P1 
-	}
-
-	
+	}	
 }

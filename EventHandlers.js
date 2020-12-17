@@ -11,23 +11,6 @@ function setEventListeners( canvas ){
 
     document.onmousemove = handleMouseMove;
 
-    // NEW ---Handling the keyboard
-
-    // From learningwebgl.com
-
-    // function handleKeyDown(event) {
-
-    //     currentlyPressedKeys[event.keyCode] = true;
-    // }
-
-    // function handleKeyUp(event) {
-
-    //     currentlyPressedKeys[event.keyCode] = false;
-    // }
-
-    // document.onkeyup = handleKeyUp;
-    
-    // document.onkeydown = handleKeyDown;
 
     document.addEventListener('keydown', function(event) {
         if (event.code == 'KeyA') {
